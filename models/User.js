@@ -1,20 +1,16 @@
-const mongoose = require("mongoose");
-var uuid = require("node-uuid");
-const Schema = mongoose.Schema;
-
+var mongoose = require("mongoose"),
+  bcrypt = require("bcrypt"),
+  Schema = mongoose.Schema;
 const UserSchema = new Schema({
-  id: {
-    type: String,
-    default: uuid.v1,
-  },
   username: {
     type: String,
-    require: true,
+    required: true,
+    trim: true,
     unique: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
   name: {
     type: String,
@@ -24,6 +20,10 @@ const UserSchema = new Schema({
   },
   email: {
     type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    required: true,
   },
   location: {
     type: String,
@@ -55,4 +55,4 @@ const UserSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

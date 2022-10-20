@@ -1,7 +1,9 @@
-function route(app) {
-  app.use("/news", newsRouter);
+const userRoute = require("./UserRoute");
 
-  app.use("/", siteRouter);
+function route(app) {
+  app.use("/auth", userRoute);
+
+  app.use("/", (req, res) => res.send("hello"));
 }
 
 module.exports = route;
