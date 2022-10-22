@@ -4,10 +4,11 @@ var mongoose = require("mongoose"),
   bcrypt = require("bcrypt"),
   dotenv = require("dotenv");
 // User = mongoose.model("User");
-var User = require("../models/User");
+var User = require("../models/User"),
+  jwtService = require("../services/JWTService");
 dotenv.config();
 
-exports.register = function (req, res) {
+function Register(req, res) {
   var newUser = new User(req.body);
   newUser.password = bcrypt.hashSync(req.body.password, 10);
   newUser
@@ -25,8 +26,8 @@ exports.register = function (req, res) {
         message: "Server error. Please try again.",
       });
     });
-};
-exports.login = function (req, res) {
+}
+function Login(req, res) {
   User.findOne({ username: req.body.username }, (err, user) => {
     if (err) {
       console.log(err);
@@ -38,12 +39,11 @@ exports.login = function (req, res) {
       return res.status(200).json({
         message: "Wrong username or password, please check again!",
       });
-    let jwtKey = process.env.JWT_SECRET_KEY;
-    let data = {
-      userId: user._id,
-    };
-    const token = jwt.sign(data, jwtKey);
+    const token = jwtService.generateToken(user._id, user.role);
     return res.status(200).json({ token: token });
   });
-};
-exports.loginRequired = function (req, res) {};
+}
+function getUserData(req, res) {
+  res.send("hello");
+}
+module.exports = { Login, Register, getUserData };

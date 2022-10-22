@@ -1,9 +1,9 @@
 const userRoute = require("./UserRoute");
 
 function route(app) {
-  app.use("/auth", userRoute);
+  app.use("/api/auth", userRoute);
 
-  app.use("/", (req, res) => res.send("hello"));
+  app.get("/api", (req, res) => res.send("hello"));
 }
 
 module.exports = route;

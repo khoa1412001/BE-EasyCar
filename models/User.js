@@ -1,6 +1,7 @@
 var mongoose = require("mongoose"),
   bcrypt = require("bcrypt"),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+  role = require("../configs/role_list");
 const UserSchema = new Schema({
   username: {
     type: String,
@@ -52,6 +53,10 @@ const UserSchema = new Schema({
   createAt: {
     type: Date,
     default: Date.now,
+  },
+  role: {
+    type: Number,
+    default: role.CUSTOMER,
   },
 });
 
