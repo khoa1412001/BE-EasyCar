@@ -1,7 +1,7 @@
 var mongoose = require("mongoose"),
   bcrypt = require("bcrypt"),
   Schema = mongoose.Schema,
-  role = require("../configs/role_list");
+  role = require("../configs/roleList");
 const UserSchema = new Schema({
   username: {
     type: String,

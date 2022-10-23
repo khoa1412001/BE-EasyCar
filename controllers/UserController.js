@@ -9,7 +9,6 @@ var User = require("../models/User"),
 dotenv.config();
 
 function Register(req, res) {
-  var newUser = new User(req.body);
   newUser.password = bcrypt.hashSync(req.body.password, 10);
   newUser
     .save()
@@ -28,6 +27,7 @@ function Register(req, res) {
     });
 }
 function Login(req, res) {
+  console.log(req.body);
   User.findOne({ username: req.body.username }, (err, user) => {
     if (err) {
       console.log(err);
@@ -44,6 +44,9 @@ function Login(req, res) {
   });
 }
 function getUserData(req, res) {
-  res.send("hello");
+  User.findById(req.user.userId, (err, user) => {
+    if (err) return res.status(401).send("User not found");
+    res.status(200).json(user);
+  });
 }
 module.exports = { Login, Register, getUserData };
