@@ -5,7 +5,8 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   swaggerUi = require("swagger-ui-express"),
   cors = require("cors"),
-  swaggerJsdoc = require("./configs/swaggerConfig");
+  swaggerJsdoc = require("./configs/swaggerConfig"),
+  morgan = require("morgan");
 const route = require("./routes");
 
 let PORT = process.env.PORT || 5000;
@@ -14,9 +15,10 @@ let mongodb = process.env.MONGODB_URL;
 dotenv.config();
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({ credentials: true, origin:true}));
+app.use(cors({ credentials: true, origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
+app.use(morgan("dev"));
 mongoose
   .connect(mongodb)
   .then(() => {
@@ -26,12 +28,6 @@ mongoose
     console.log("err", err);
   });
 
-app.use((req, res, next) => {
-  var start = new Date();
-  var url = `${req.method} ${req.url}`;
-  next();
-  console.log(`${url} ${new Date() - start} ms`);
-});
 route(app);
 
 app.listen(PORT, () => {
