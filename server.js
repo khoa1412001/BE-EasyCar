@@ -4,6 +4,7 @@ const express = require("express"),
   jwt = require("jsonwebtoken"),
   bodyParser = require("body-parser"),
   swaggerUi = require("swagger-ui-express"),
+  cors = require("cors"),
   swaggerJsdoc = require("./configs/swaggerConfig");
 const route = require("./routes");
 
@@ -13,6 +14,7 @@ let mongodb = process.env.MONGODB_URL;
 dotenv.config();
 const app = express();
 app.use(bodyParser.json());
+app.use(cors({ credentials: true, origin:true}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 mongoose
