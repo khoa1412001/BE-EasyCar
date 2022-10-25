@@ -31,16 +31,16 @@ function Login(req, res) {
   User.findOne({ username: req.body.username }, (err, user) => {
     if (err) {
       console.log(err);
-      return res.status(200).json({
+      return res.status(400).json({
         message: "Server error, please try again!",
       });
     }
     if (user === null || !bcrypt.compareSync(req.body.password, user.password))
-      return res.status(200).json({
+      return res.status(400).json({
         message: "Wrong username or password, please check again!",
       });
-    const token = jwtService.generateToken(user._id, user.role);
-    return res.status(200).json({ token: token });
+    const accessToken = jwtService.generateToken(user._id, user.role);
+    return res.status(200).json({ token: accessToken });
   });
 }
 function getUserData(req, res) {
