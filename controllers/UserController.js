@@ -40,7 +40,7 @@ function Login(req, res) {
         message: "Wrong username or password, please check again!",
       });
     const accessToken = jwtService.generateToken(user._id, user.role);
-    return res.status(200).json({ token: accessToken });
+    return res.status(200).json({ accesstoken: accessToken });
   });
 }
 function getUserData(req, res) {
