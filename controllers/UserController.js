@@ -62,4 +62,19 @@ function checkEmail(req, res) {
     return res.status(200).send("Tài khoản hợp lệ");
   });
 }
-module.exports = { Login, Register, getUserData, checkEmail };
+async function changePassword(req, res) {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (
+      user === null ||
+      !bcrypt.compareSync(req.body.oldPassword, user.password)
+    )
+      return res.status(400).send("Mật khẩu cũ không hợp lệ, vui lòng thử lại");
+    user.password = bcrypt.hashSync(req.body.newPassword, 10);
+    await user.save();
+    return res.status(200).send("Đổi mật khẩu thành công");
+  } catch (error) {
+    return res.status(500).send("Lỗi máy chủ, vui lòng thử lại sau!");
+  }
+}
+module.exports = { Login, Register, getUserData, checkEmail, changePassword };
