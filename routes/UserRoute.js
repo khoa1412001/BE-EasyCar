@@ -53,5 +53,7 @@ router.get(
   verifyRoles(role.STAFF, role.ADMIN, role.CUSTOMER),
   userController.getUserData
 );
-//, verifyRoles
+
+//Kiem tra email
+router.get("/email", userController.checkEmail);
 module.exports = router;
