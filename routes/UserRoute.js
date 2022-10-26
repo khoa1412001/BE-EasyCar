@@ -56,5 +56,5 @@ router.get(
 
 router.get("/email", userController.checkEmail); //Kiem tra email
 router.post("/change-password", passport, userController.changePassword); //Doi mat khau
-
+router.get("/send-email", passport, userController.sendValidateMail);
 module.exports = router;

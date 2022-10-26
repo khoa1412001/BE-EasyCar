@@ -2,7 +2,8 @@ const { json } = require("express");
 var mongoose = require("mongoose"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
-  dotenv = require("dotenv");
+  dotenv = require("dotenv"),
+  sendMail = require("../services/Sendmail");
 // User = mongoose.model("User");
 var User = require("../models/User"),
   jwtService = require("../services/JWTService");
@@ -15,14 +16,12 @@ function Register(req, res) {
     .save()
     .then(() => {
       return res.status(201).json({
-        success: true,
         message: "Tạo tài khoản thành công",
       });
     })
     .catch((error) => {
       console.log(error);
       res.status(500).json({
-        success: false,
         message: "Lỗi máy chủ, vui lòng thử lại sau.",
       });
     });
@@ -45,7 +44,8 @@ function Login(req, res) {
 }
 function getUserData(req, res) {
   User.findById(req.user.userId, (err, user) => {
-    if (err) return res.status(401).send("Không tìm thấy người dùng");
+    if (err)
+      return res.status(401).json({ message: "Không tìm thấy người dùng" });
     res.status(200).json({
       username: user.username,
       email: user.email,
@@ -58,9 +58,9 @@ function getUserData(req, res) {
 function checkEmail(req, res) {
   User.countDocuments({ email: req.body.email }, (err, count) => {
     if (count > 0) {
-      return res.status(400).send("Tài khoản đã tồn tại");
+      return res.status(400).json({ message: "Tài khoản đã tồn tại" });
     }
-    return res.status(200).send("Tài khoản hợp lệ");
+    return res.status(200).json({ message: "Tài khoản hợp lệ" });
   });
 }
 async function changePassword(req, res) {
@@ -70,12 +70,37 @@ async function changePassword(req, res) {
       user === null ||
       !bcrypt.compareSync(req.body.oldPassword, user.password)
     )
-      return res.status(400).send("Mật khẩu cũ không hợp lệ, vui lòng thử lại");
+      return res
+        .status(400)
+        .json({ message: "Mật khẩu cũ không hợp lệ, vui lòng thử lại" });
     user.password = bcrypt.hashSync(req.body.newPassword, 10);
     await user.save();
-    return res.status(200).send("Đổi mật khẩu thành công");
+    return res.status(200).json({ message: "Đổi mật khẩu thành công" });
   } catch (error) {
-    return res.status(500).send("Lỗi máy chủ, vui lòng thử lại sau!");
+    return res
+      .status(500)
+      .json({ message: "Lỗi máy chủ, vui lòng thử lại sau!" });
   }
 }
-module.exports = { Login, Register, getUserData, checkEmail, changePassword };
+async function sendValidateMail(req, res) {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (sendMail(user.email))
+      return res.status(200).json({ message: "Gửi mail xác thực thành công" });
+    return res.status(400).json({
+      message: "Hệ thống tạm thời không gửi được email, vui lòng thử lại sau",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Lỗi máy chủ, vui lòng thử lại sau" });
+  }
+}
+module.exports = {
+  Login,
+  Register,
+  getUserData,
+  checkEmail,
+  changePassword,
+  sendValidateMail,
+};
