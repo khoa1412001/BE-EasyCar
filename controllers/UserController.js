@@ -51,6 +51,7 @@ function getUserData(req, res) {
       email: user.email,
       avatar: user.avatar,
       phoneNumber: user.phoneNumber,
+      location: user.location,
     });
   });
 }
