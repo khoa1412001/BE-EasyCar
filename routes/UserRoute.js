@@ -50,8 +50,11 @@ router.post("/login", userController.Login);
 router.get(
   "/",
   passport,
-  verifyRoles(role.STAFF, role.ADMIN, role.CUSTOMER),
+  //verifyRoles(role.STAFF, role.ADMIN, role.CUSTOMER),
   userController.getUserData
 );
-//, verifyRoles
+
+router.get("/email", userController.checkEmail); //Kiem tra email
+router.post("/change-password", passport, userController.changePassword); //Doi mat khau
+router.get("/send-email", passport, userController.sendValidateMail);
 module.exports = router;

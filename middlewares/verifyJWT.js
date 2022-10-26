@@ -10,7 +10,6 @@ function authenticateToken(req, res, next) {
       console.log(err.message);
       return res.status(403).send("Unauthenticated");
     }
-    console.log(decoded);
     req.user = {
       userId: decoded.userId,
       role: decoded.role,
