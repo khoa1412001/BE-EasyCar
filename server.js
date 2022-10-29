@@ -14,7 +14,7 @@ let mongodb = process.env.MONGODB_URL;
 dotenv.config();
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({ credentials: true, origin:true}));
+app.use(cors({ credentials: true, origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 mongoose
@@ -25,12 +25,8 @@ mongoose
   .catch((err) => {
     console.log("err", err);
   });
-
-app.use((req, res, next) => {
-  var start = new Date();
-  var url = `${req.method} ${req.url}`;
-  next();
-  console.log(`${url} ${new Date() - start} ms`);
+app.get("/", (req, res) => {
+  res.send("SUCCESS");
 });
 route(app);
 
