@@ -29,6 +29,9 @@ mongoose
   });
 
 route(app);
+app.use('/',(req,res) => {
+  res.send("success")
+})
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

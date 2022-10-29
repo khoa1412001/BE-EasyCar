@@ -3,9 +3,8 @@ var mongoose = require("mongoose"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
   dotenv = require("dotenv"),
-  sendMail = require("../services/Sendmail");
-// User = mongoose.model("User");
-var User = require("../models/User"),
+  sendMail = require("../services/Sendmail"),
+  User = require("../models/User"),
   jwtService = require("../services/JWTService");
 dotenv.config();
 
