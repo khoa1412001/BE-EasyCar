@@ -8,7 +8,6 @@ const express = require("express"),
   swaggerJsdoc = require("./configs/swaggerConfig"),
   morgan = require("morgan");
 const route = require("./routes");
-const axios = require("axios");
 
 let PORT = process.env.PORT || 5000;
 let mongodb = process.env.MONGODB_URL;
@@ -29,19 +28,7 @@ mongoose
     console.log("err", err);
   });
 
-//route(app);
-app.get("/", (req, res) => {
-  axios
-    .get(
-      "https://m-common.mioto.vn/lbs/search-address?sdkMap=2&address=20 Nguyễn Oanh"
-    )
-    .then((res) => {
-      console.log(res.data.data.locations);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+route(app);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
