@@ -1,6 +1,6 @@
 const axios = require("axios");
 function searchAddress(req, res) {
-  console.log(address);
+  let address = req.query.address;
   if (!address)
     return res.status(400).json({ comment: "Vui lòng nhập địa chỉ" });
   axios
