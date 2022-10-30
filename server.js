@@ -5,7 +5,8 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   swaggerUi = require("swagger-ui-express"),
   cors = require("cors"),
-  swaggerJsdoc = require("./configs/swaggerConfig");
+  swaggerJsdoc = require("./configs/swaggerConfig"),
+  morgan = require("morgan");
 const route = require("./routes");
 
 let PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(cors({ credentials: true, origin: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
+app.use(morgan("dev"));
 mongoose
   .connect(mongodb)
   .then(() => {
@@ -28,6 +30,7 @@ mongoose
 app.get("/", (req, res) => {
   res.send("SUCCESS");
 });
+
 route(app);
 
 app.listen(PORT, () => {
