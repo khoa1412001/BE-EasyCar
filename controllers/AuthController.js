@@ -51,6 +51,7 @@ function getUserData(req, res) {
       avatar: user.avatar,
       phoneNumber: user.phoneNumber,
       location: user.location,
+      gender: user.gender,
     });
   });
 }

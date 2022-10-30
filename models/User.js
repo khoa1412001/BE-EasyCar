@@ -60,6 +60,10 @@ const UserSchema = new Schema(
       type: Number,
       default: role.CUSTOMER,
     },
+    gender: {
+      type: String,
+      default:"MALE",
+    }
   },
   { timestamps: true }
 );
