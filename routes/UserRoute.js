@@ -9,4 +9,10 @@ router.post(
   uploadImage.single("avatar"),
   userController.UpdateAvatar
 );
+router.post(
+  "/verify",
+  passport,
+  uploadImage.single("driverlincenseimg"),
+  userController.VerifyUser
+);
 module.exports = router;

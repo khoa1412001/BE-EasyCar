@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const UserVerificationRequest = require("../models/UserVerificationRequest");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -33,4 +34,32 @@ async function UpdateAvatar(req, res) {
       .json({ message: "Lỗi hệ thống, vui lòng thử lại sau" });
   }
 }
-module.exports = { UpdateUser, UpdateAvatar };
+async function VerifyUser(req, res) {
+  try {
+    var newRequest = new UserVerificationRequest();
+    newRequest._id = req.user.userId;
+    newRequest.username = req.body.username;
+    newRequest.driverLicenseNumber = req.body.driverlicense;
+    newRequest.bod = req.body.bod;
+    newRequest.driverLicenseImg = req.file.path;
+    newRequest
+      .save()
+      .then(() => {
+        return res.status(201).json({
+          message: "Tạo yêu cầu xác thực tài khoản thành công",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({
+          message: "Lỗi máy chủ, vui lòng thử lại sau.",
+        });
+      });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Lỗi hệ thống xin vui lòng thử lại sau" });
+  }
+}
+module.exports = { UpdateUser, UpdateAvatar, VerifyUser };
