@@ -14,9 +14,9 @@ let mongodb = process.env.MONGODB_URL;
 
 dotenv.config();
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors({ credentials: true, origin: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 app.use(morgan("dev"));
 mongoose
