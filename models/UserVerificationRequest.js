@@ -1,39 +1,35 @@
 const mongoose = require("mongoose");
-var uuid = require("node-uuid");
+const statusList = require("../configs/statusList");
 const Schema = mongoose.Schema;
-const UserVerificationRequestSchema = new Schema({
-  id: {
-    type: String,
-    default: uuid.v1,
+const ObjectId = Schema.Types.ObjectId;
+const UserVerificationRequestSchema = new Schema(
+  {
+    _id: {
+      type: ObjectId,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    driverLicenseNumber: {
+      type: String,
+      required: true,
+    },
+    bod: {
+      type: Date,
+      required: true,
+    },
+    driverLicenseImg: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: Number,
+      default: statusList.PENDING,
+    },
   },
-  name: {
-    type: String,
-  },
-  phonenumber: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-  location: {
-    type: String,
-  },
-  status: {
-    type: Boolean,
-  },
-  driverLicenseImg: {
-    type: String,
-  },
-  selfieImg: {
-    type: String,
-  },
-  socialImg: {
-    type: String,
-  },
-  verification: {
-    type: Boolean,
-  },
-});
+  { timestamps: true }
+);
 module.exports = mongoose.model(
   "UserVerificationRequest",
   UserVerificationRequestSchema
