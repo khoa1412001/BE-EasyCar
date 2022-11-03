@@ -1,11 +1,11 @@
-const router = require("express").Router;
+const router = require("express").Router();
 const vehicleController = require("../controllers/VehicleController");
-const uploadImage = require("../middlewares/UploadImage");
+const parser = require("../middlewares/Parser");
 const passport = require("../middlewares/VerifyJWT");
-// router.post(
-//   "/add-vehicle",
-//   passport,
-//   uploadImage.array("vehicle"),
-//   vehicleController.AddVehicle
-// );
+router.post(
+  "/add-vehicle",
+  passport,
+  parser.array("vehicle"),
+  vehicleController.AddVehicle
+);
 module.exports = router;
