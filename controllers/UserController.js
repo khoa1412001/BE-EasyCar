@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
-const uploadFile = require("../utils/cloudinary");
+const {uploadSingle, uploadArray} = require("../utils/cloudinary");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -23,8 +23,9 @@ async function UpdateAvatar(req, res) {
   try {
     //xu ly xoa hinh anh cu~
     const user = await User.findById(req.user.userId);
-    const result = await uploadFile(req.file);
-    user.avatar = result.url;
+    const result = uploadArray(req.files);
+    console.log(result)
+    //user.avatar = result.url;
     await user.save();
     return res
       .status(200)
@@ -38,7 +39,7 @@ async function UpdateAvatar(req, res) {
 }
 async function VerifyUser(req, res) {
   try {
-    const result = await uploadFile(req.file);
+    const result = uploadSingle(req.file);
 
     var newRequest = new UserVerificationRequest();
     newRequest._id = req.user.userId;
