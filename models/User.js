@@ -1,5 +1,4 @@
 var mongoose = require("mongoose"),
-  bcrypt = require("bcrypt"),
   Schema = mongoose.Schema,
   role = require("../configs/roleList");
 const UserSchema = new Schema(
