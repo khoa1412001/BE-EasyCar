@@ -87,6 +87,7 @@ router.get(
   //verifyRoles(role.STAFF, role.ADMIN, role.CUSTOMER),
   authController.getUserData
 );
+// router.get('/refresh', authController.refreshToken)
 
 router.post("/check-email", authController.checkEmail); //Kiem tra email
 router.post("/change-password", passport, authController.changePassword); //Doi mat khau

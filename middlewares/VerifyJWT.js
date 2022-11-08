@@ -5,14 +5,14 @@ function authenticateToken(req, res, next) {
     req.headers["authorization"] || req.headers["Authorization"];
   if (!authHeader?.startsWith("Bearer")) return res.sendStatus(401);
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.ACCESS_KEY, (err, decoded) => {
+  jwt.verify(token, process.env.ACCESS_KEY, (err, user) => {
     if (err) {
       console.log(err.message);
-      return res.status(403).send("Unauthenticated");
+      return res.status(403).json({ message: "Unauthenticated" });
     }
     req.user = {
-      userId: decoded.userId,
-      role: decoded.role,
+      userId: user.userId,
+      role: user.role,
     };
     next();
   });

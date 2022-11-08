@@ -1,0 +1,116 @@
+id,brand,model,image
+1,BMW,X3,https://www.motortrend.com/uploads/sites/10/2018/08/2019-bmw-x3-suv-angular-front.png?fit=around%7C875:492.1875
+2,BMW,X2,https://www.motortrend.com/uploads/sites/10/2021/04/2022-bmw-x2-m35i-4wd-suv-angular-front.png?fit=around%7C960:600
+3,BMW,X1,https://www.motortrend.com/uploads/sites/10/2020/04/2020-bmw-x1-xdrive-28i-suv-angular-front.png?fit=around%7C960:600
+4,BMW,M5,https://www.motortrend.com/uploads/sites/10/2019/08/2020-bmw-m5-sedan-angular-front.png?fit=around%7C875:492.1875
+5,BMW,M3,https://www.motortrend.com/uploads/sites/10/2022/01/2021-bmw-m3-competition-sedan-angular-front.png?fit=around%7C960:600
+6,BMW,5 Series,https://www.motortrend.com/uploads/sites/10/2019/08/2020-bmw-5-series-m-sport-sedan-angular-front.png?fit=around%7C960:600
+7,BMW,4 Series,https://www.motortrend.com/uploads/sites/10/2019/06/2020-bmw-4-series-430i-luxury-coupe-angular-front.png?fit=around%7C960:600
+8,BMW,3 Series,https://www.motortrend.com/uploads/sites/10/2019/09/2020-bmw-3-series-330i-sport-line-sedan-angular-front.png?fit=around%7C875:492.1875
+9,Chevrolet,Aveo,https://www.motortrend.com/uploads/sites/10/2015/11/2011-chevrolet-aveo-1ls-sd-sedan-angular-front.png?fit=around%7C1000:625
+10,Chevrolet,Blazer,https://www.motortrend.com/uploads/sites/10/2019/11/2020-chevrolet-blazer-premier-4wd-suv-angular-front.png?fit=around%7C875:492.1875
+11,Chevrolet,Colorado,https://www.motortrend.com/uploads/sites/10/2019/10/2020-chevrolet-colorado-wt-ext-cab-pick-up-angular-front.png?fit=around%7C960:600
+12,Chevrolet,Cruze,https://www.motortrend.com/uploads/sites/10/2015/11/2011-chevrolet-cruze-4-door-sedan-ltz-angular-front.png?fit=around%7C875:492.1875
+13,Chevrolet,Equinox,https://www.motortrend.com/uploads/sites/10/2020/11/2021-chevrolet-equinox-lt-4wd-suv-angular-front.png?fit=around%7C875:492.1875
+14,Chevrolet,Spark,https://www.motortrend.com/uploads/sites/10/2020/12/2021-chevrolet-spark-ls-5door-hatchback-angular-front.png?fit=around%7C875:492.1875
+15,Chevrolet,Sonic,https://www.motortrend.com/uploads/sites/10/2019/09/2020-chevrolet-sonic-lt-automatic-sedan-angular-front.png?fit=around%7C960:600
+16,Chevrolet,Trax,https://www.motortrend.com/uploads/sites/10/2019/08/2020-chevrolet-trax-ls-suv-angular-front.png?fit=around%7C960:600
+17,Chevrolet,Trailblazer,https://www.motortrend.com/uploads/sites/5/2020/06/2021-chevrolet-trailblazer.png?fit=around%7C875:492.1875
+18,Ford,Explorer,https://www.motortrend.com/uploads/sites/10/2021/07/2021-ford-explorer-st-4wd-suv-angular-front.png?fit=around%7C960:600
+19,Ford,Everest,https://heyoto.vn/wp-content/uploads/2020/11/new-ford-everest-mau-xam.jpg
+20,Ford,Territory,https://baogiaxeford.com/wp-content/uploads/2020/08/ford-territory-2023-mau-trang.png
+21,Ford,Focus,https://www.motortrend.com/uploads/sites/10/2017/10/2018-ford-focus-se-sedan-angular-front.png
+22,Ford,EcoSport,https://www.motortrend.com/uploads/sites/10/2022/04/2022-ford-ecosport-se-suv-angular-front.png?fit=around%7C875:492.1875
+23,Ford,Ranger,https://www.motortrend.com/uploads/sites/10/2020/03/2020-ford-ranger-xlt-crew-cab-pick-up-angular-front.png?fit=around%7C875:492.1875
+24,Honda,Brio,https://www.honda.com.vn/o-to/san-pham/honda-brio/dist/assets//images/s-color/silver/F4.jpg
+25,Honda,City,https://honda-angiang.com/public/upload/images/hinhsanpham/honda-city-2020-5411608285273.jpg
+26,Honda ,Jazzz,https://i.i-sgcm.com/new_cars/cars/11531/11531_m.jpg
+27,Honda ,Civic,https://hondaotobinhduong.net/wp-content/uploads/2019/11/honda-civic-2022.jpg
+28,Honda ,CR-V,"https://images.dealer.com/ddc/vehicles/2022/Honda/CR-V/SUV/color/Sonic%20Grey%20Pearl-NH_877P-91,90,96-640-en_CA.jpg"
+29,Honda ,HR-V,https://www.honda.com.sg/images/cars/All-New_HRV_2021/Colours/Opal-White-v3.jpg
+30,Honda ,Accord,https://vcdn1-vnexpress.vnecdn.net/2021/12/21/honda-accord-1640052312-6504-1640052801.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=Zg1k4qvFS0vFv7HfNbk5BQ
+31,Honda ,Odyssey,https://cars.usnews.com/static/images/Auto/izmo/i159615163/2023_honda_odyssey_angularfront.jpg
+32,Huyndai,Grand i10,https://hyundaibacninh5s.com/wp-content/uploads/2018/05/i10-gris-1.png
+33,Huyndai,Accent,https://s7d1.scene7.com/is/image/hyundai/2022-accent-se-olympus-silver-centered-browse-hero:Browse?fmt=webp-alpha
+34,Huyndai,Elantra,https://heyoto.vn/wp-content/uploads/2022/09/hyundai-elantra-2-0-at.jpg
+35,Huyndai,Stargazer,https://giaxehoi.vn/uploads/Xe/Hyundai/Hyundai-Stargazer/gia-xe-hyundai-stargazer-2023-giaxehoi-vn-500x299.png
+36,Huyndai,Creta,https://drive.gianhangvn.com/image/creta-trang-logo-2076124j29320.jpg
+37,Huyndai,Tucson,https://www.motortrend.com/uploads/sites/10/2020/12/2021-hyundai-tucson-sel-4wd-suv-angular-front.png
+38,Huyndai,SantaFe,https://platform.cstatic-images.com/large/in/v2/stock_photos/19628685-d640-496a-8abc-a78e7a92fc98/412c5f84-fa82-457d-bb86-c6d7b4f02534.png
+39,Huyndai,Palisade,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmgsFStFm9a9kRrC8Jvx8g-zcfo5AiO7cwTg&usqp=CAU
+40,Huyndai,Santa Cruz,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjqM3zrSzNGEnVu85wj1ER_ep1XpNtPAcXEg&usqp=CAU
+41,Huyndai,Kona,https://www.motortrend.com/uploads/sites/10/2020/12/2021-hyundai-kona-se-suv-angular-front.png
+42,Huyndai,Sonata,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2021HYC030001_1280_01"
+43,Isuzu,mu-X,https://auto5.vn/files/ctvcuongnguyen/2021/02/26/mau-xe-isuzu-mu-x-trang-235748.png
+44,Isuzu,D-Max,https://isuzuviethai.com/wp-content/uploads/2022/04/isuzu-dmax-2022-79.jpg
+45,KIA,K3,https://thenewk3.kiavietnam.com.vn/themes/main/images/form/xe/premium/3.png?v=2
+46,KIA,K5,https://www.motortrend.com/uploads/sites/10/2021/08/2022-kia-k5-ex-sedan-angular-front.png
+47,KIA,Sonet,https://bizweb.dktcdn.net/thumb/1024x1024/100/366/403/products/kia-sonet-phien-ban-15-gtx-plus-1.png?v=1659499938617
+48,KIA,Carnival,https://kiavietnam.com.vn/storage/product/carnival/edit-car-2.png
+49,KIA,Morning,https://kiavietnam.com.vn/storage/product/new-morning-logo-moi/logo-moi/kia-moring-2.jpg
+50,KIA,Soluto,https://images.summitmedia-digital.com/topgear/images/2019/01/31/2019-kia-soluto-main-1548904168.jpg
+51,KIA,Seltos,https://kiavietnam.com.vn/storage/product/seltos/kiaseltos-3.png
+52,KIA ,Sorento,https://kiahatinh.com/files/product/125/11-01-2021/dauxeo_TvLiyClI.jpg
+53,KIA,Sportage,https://media.hatla2eestatic.com/uploads/ncarteraz/37835/big-up_a3647f6571981438fb449fc3ba488499.jpg
+54,KIA ,Sedona,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2021KIV010016_1280_01"
+55,KIA ,Cerato,https://kiavietnam.com.vn/storage/kiacerato/ceratogt-main-1680x760-3.png
+56,KIA,Forte,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2021KIC110114_1280_01"
+57,KIA ,Rio,https://muaxegiatot.vn/wp-content/uploads/2020/05/ngoai-that-kia-rio-2020-2021-muaxegiatot-vn.png
+58,KIA,Carens,https://dailymuabanxe.net/wp-content/uploads/2022/06/Kia-Carens-Mau-Xam.jpg
+59,KIA ,Rondo,https://tdrresearch.azureedge.net/photos/chrome/Expanded/White/2016KIC090001/2016KIC09000101.jpg?w=400
+60,Mazda,Mazda 2,https://www.mazda.co.nz/globalassets/_mazdanz/ourrange/mazda2/gen-j/gsx/front-3qu/200jah5gsx15_machinegraym_1.jpg
+61,Mazda,Mazda 3,"https://images.drive.com.au/driveau/image/upload/c_fill,f_auto,g_auto,h_360,q_auto:best,w_640/vehicles/showrooms/models/mazda-3"
+62,Mazda,Mazda 6,https://bizweb.dktcdn.net/100/372/787/files/ac-quy-xe-mazda-6.jpg
+63,Mazda,Mazda CX-3,https://img.autotrader.co.za/14718491/Crop800x600
+64,Mazda,Mazda CX-30,https://www.mazdausa.com/siteassets/vehicles/2023/cx-30/34-jellies/cx-30-2.5-s/2022-cx30-2-5s-jet-black.png
+65,Mazda,Mazda CX-5,https://www.mazdausa.com/siteassets/vehicles/2023/cx-5/build--price/trims/34-jellies/2.5-s-select/2022-cx5-2-5s-select-sonic-silver-metallic.png
+66,Mazda,Mazda CX-8,https://heyoto.vn/wp-content/uploads/2020/03/thumb-new-mazda-cx-8-luxury.jpg
+67,Mazda,Mazda BT-50,https://bizweb.dktcdn.net/100/366/403/products/kia-sportage-2021-c4faeae9-a32a-4890-b9d4-6fe742897bc2.png?v=1659499939870
+68,Mitsubishi,Attrage,https://static.bangkokpost.com/media/content/20191118/3412094.jpg
+69,Mitsubishi,Xpander Cross,https://welovecar.vn/wp-content/uploads/2019/11/welovecar-2020-mitsubishi-xpander-cross-01.jpg
+70,Mitsubishi,Xpander ,https://welovecar.vn/wp-content/uploads/2019/11/welovecar-2020-mitsubishi-xpander-cross-01.jpg
+71,Mitsubishi,Triton,https://mitsubishimotorsdanang.com.vn/wp-content/uploads/2021/12/W85_45_20L200-51-R-Front-L-Card-20201116-e1638963108686-1024x573.png
+72,Mitsubishi,Pajero Sport,https://images.carandbike.com/car-images/colors/mitsubishi/pajero-sport/mitsubishi-pajero-sport-storm-gray.png?v=1
+73,Mitsubishi,Pajero,https://images.carandbike.com/car-images/colors/mitsubishi/pajero-sport/mitsubishi-pajero-sport-storm-gray.png?v=1
+74,Mitsubishi,Outlander,https://www.motortrend.com/uploads/sites/10/2017/10/2018-mitsubishi-outlander-gt-suv-angular-front.png
+75,Mitsubishi,Mirage,https://www.motortrend.com/uploads/sites/10/2022/02/2022-mitsubishi-mirage-es-5door-hatchback-angular-front.png
+76,Nissan,Almera,https://images.wapcar.my/file1/14e9ec29fc9343828f2f8b1a27d1b20a_678x380.jpg
+77,Nissan,Kicks ,https://cms-i.autodaily.vn/du-lieu/2022/07/20/nissan-kicks-japan-4.jpg
+78,Nissan,Navara,http://bizweb.dktcdn.net/thumb/grande/100/366/403/products/ngoai-that-hyundai-grand-i10-cuv-ae6fb62e-12bf-476e-9d13-c89e9d122440.jpg?v=1659499944947
+79,Nissan ,X-Trail,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9syU_h5P6NQ3dnJUY1KVrW4RevslEYP6M3wRLcP14TQWbKCCl14KwDhoIotWPhvwhUY&usqp=CAU
+80,Nissan,Terra,https://www-asia.nissan-cdn.net/content/dam/Nissan/th/vehicles/terra-2021/VLP/VLP_car_1.png.ximg.l_12_m.smart.png
+81,Nissan ,Sunny,https://m.media-amazon.com/images/I/61UYdfUBAoL._SL1500_.jpg
+82,Subaru,Outback,https://cars.usnews.com/static/images/Auto/izmo/i159614590/2022_subaru_outback_angularfront.jpg
+83,Subaru,WRX,https://cdn.oem-production.subaru.com.au/media/7276/my21-subaru-wrx-sti-specr-awd-wrblue-front.png
+84,Subaru,Forester,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2018SUS040024_1280_01"
+85,Suzuki,XL7,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4j5EtaMLr3F-rGvzkQOdhpOjoSl8Tq5TIauuRYGO0yjoIYBvQnaMNUCDO-iksxG6uYAQ&usqp=CAU
+86,Suzuki,XL7 Sport,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4j5EtaMLr3F-rGvzkQOdhpOjoSl8Tq5TIauuRYGO0yjoIYBvQnaMNUCDO-iksxG6uYAQ&usqp=CAU
+87,Suzuki,Ciaz,https://carnetwork.s3.ap-southeast-1.amazonaws.com/file/5c7fdc557f9b4b13adad702e1d2f7ac4.jpg
+88,Suzuki,Swift,https://saigonngoisao.com.vn/vnt_upload/product/09_2022/swift-euro5.png
+89,Suzuki,Vitara,https://www.suzuki.co.nz/images/assets/561881/23
+90,Suzuki,Ertiga,https://saigonngoisao.com.vn/vnt_upload/product/09_2022/hybrid-ertiga-png_2.png
+91,Toyota,Vios,https://www.toyota.com.sg/showroom/new-models/-/media/6090562bee9c4f78b7ee748c8b0e87ab.png
+92,Toyota,Wigo,https://www.tfsvn.com.vn/wp-content/uploads/2021/04/Wigo-5MT.png
+93,Toyota,Altis,https://toyotavungtau.vn/upload/tour/474849704810.png
+94,Toyota ,Yaris,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2011TOY016a_640_01"
+95,Toyota,Camry,"https://crdms.images.consumerreports.org/c_lfill,w_470,q_auto,f_auto/prod/cars/chrome/white/2021TOC020001_1280_01"
+96,Toyota ,Avanza,https://imgx.gridoto.com/crop/0x0:0x0/700x465/photo/2022/03/08/avanza-jjpg-20220308015525.jpg
+97,Toyota,Veloz,https://toyotabicutan.com/wp-content/uploads/2022/04/Toyota-Veloz_Dark-Red-Mica-Metallic.png
+98,Toyota,Raize,https://i-vnexpress.vnecdn.net/2022/07/07/Raize-1646556802-1719-16465568-8288-8423-1657179025.jpg
+99,Toyota,Innova,https://d3ggoe3aghc7um.cloudfront.net/uploads/prices/608/002_608_1618384323118_000.png
+100,Toyota,Corolla Cross,https://cache1.pakwheels.com/system/car_generation_pictures/6003/original/Corolla_Cross_-_PNG.png?1635419789
+101,Toyota,Fortuner,https://cdni.autocarindia.com/Utils/ImageResizer.ashx?n=https://cdni.autocarindia.com/Galleries/20200604105144_Toyota-Fortuner-facelift-3.jpg&w=872&h=578&q=75&c=1
+102,Toyota,Hilux,https://giaxehoi.vn/uploads/Xe/Toyota/Hilux/hinh-xe-toyota-hilux-2022-giaxehoi-vn-404x268.jpeg
+103,Toyota,Sienna,https://www.toyota.com/imgix/content/dam/toyota/jellies/max/2022/sienna/woodlandedition/5409/1h5/2.png?fm=webp&bg=white&w=768&h=328&q=90
+104,Volvo,S90,https://volvo-vn.com/wp-content/uploads/Volvo-S90-Inscription-B6-AWD-2022-2.jpg
+105,Volvo,S60,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFQcGKcUx0144pEU9k_2rmh8eF-1DLZ5qsA&usqp=CAU
+106,Volvo,C60,https://heyoto.vn/wp-content/uploads/2022/09/volvo-xc60-t8-awd-recharge-inscription.jpg
+107,Volvo,XC40,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1yKZXKep2PikEtrN5rCzLHAPDfgQOBfQu9g&usqp=CAU
+108,Volvo,XC60,https://heyoto.vn/wp-content/uploads/2022/09/volvo-xc60-r-design.jpg
+109,Volvo,XC90,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGKoWaRCTMxUL9vifNIsL-EtMfViVuhSjSdw&usqp=CAU
+110,Vinfast,VF9,https://vinfasthaiphong3s.com.vn/sites/default/files/styles/800_x_600/public/vf9_newx.png?itok=MD9fkx8K
+111,Vinfast,VF8,https://vinfastnewway.com.vn/wp-content/uploads/2022/08/vinfast-vf-8-mau-xam.jpg
+112,Vinfast,Lux A,https://showroomxe.com.vn/wp-content/uploads/2019/06/LUX-A-M2-Brown.png
+113,Vinfast,Lux SA,https://canhvinfastbacninh.com/wp-content/uploads/2020/10/white-sa-1533453f29561.png
+114,Vinfast,Fadil,https://vinfast-angiang.com.vn/public/upload/images/vinfast-fadil/mauxe/vinfast-fadil-silver.png
+115,Vinfast,e34,https://cafefcdn.com/203337114487263232/2021/3/24/1920x1080mau-04-16165530405381418257997.jpg

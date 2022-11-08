@@ -1,6 +1,6 @@
 var mongoose = require("mongoose"),
   Schema = mongoose.Schema,
-  role = require("../configs/roleList");
+  role = require("../configs/RoleList");
 const UserSchema = new Schema(
   {
     username: {
@@ -61,8 +61,8 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
-      default:"MALE",
-    }
+      default: "MALE",
+    },
   },
   { timestamps: true }
 );

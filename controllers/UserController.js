@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
-const {uploadSingle, uploadArray} = require("../utils/cloudinary");
+const { uploadSingle, uploadArray } = require("../utils/cloudinary");
+const statusList = require("../configs/StatusList");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -24,7 +25,7 @@ async function UpdateAvatar(req, res) {
     //xu ly xoa hinh anh cu~
     const user = await User.findById(req.user.userId);
     const result = uploadArray(req.files);
-    console.log(result)
+    console.log(result);
     //user.avatar = result.url;
     await user.save();
     return res
@@ -39,10 +40,19 @@ async function UpdateAvatar(req, res) {
 }
 async function VerifyUser(req, res) {
   try {
-    const result = uploadSingle(req.file);
+    const countRequest = await UserVerificationRequest.countDocuments({
+      userId: req.user.userId,
+      status: statusList.PENDING,
+    });
+    if (countRequest)
+      return res.status(400).json({
+        message: "Bạn đã gửi yêu cầu xác thực tài khoản, xin vui lòng đợi!",
+      });
+
+    const result = await uploadSingle(req.file);
 
     var newRequest = new UserVerificationRequest();
-    newRequest._id = req.user.userId;
+    newRequest.userId = req.user.userId;
     newRequest.username = req.body.username;
     newRequest.driverLicenseNumber = req.body.driverlicense;
     newRequest.bod = req.body.bod;

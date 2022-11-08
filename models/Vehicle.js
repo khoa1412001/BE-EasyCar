@@ -1,13 +1,10 @@
 const mongoose = require("mongoose");
-var uuid = require("node-uuid");
 const Schema = mongoose.Schema;
-const CarSchema = new Schema({
-  id: {
-    type: String,
-    default: uuid.v1,
-  },
-  userid: {
-    type: String,
+const ObjectId = Schema.Types.ObjectId;
+const VehicleSchema = new Schema({
+  userId: {
+    type: ObjectId,
+    required: true,
   },
   brand: {
     type: String,
@@ -41,12 +38,14 @@ const CarSchema = new Schema({
   },
   rating: {
     type: Number,
+    default: 0,
   },
   numberOfTrip: {
     type: Number,
   },
   status: {
     type: Boolean,
+    default: false,
   },
 });
-module.exports = mongoose.model("cars", CarSchema);
+module.exports = mongoose.model("Vehicle", VehicleSchema);

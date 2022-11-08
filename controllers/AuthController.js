@@ -5,7 +5,8 @@ var mongoose = require("mongoose"),
   dotenv = require("dotenv"),
   sendMail = require("../services/Sendmail"),
   User = require("../models/User"),
-  jwtService = require("../services/JWTService");
+  jwtService = require("../services/JWTService"),
+  { OAuth2Client } = require("google-auth-library");
 dotenv.config();
 
 function Register(req, res) {
@@ -96,6 +97,20 @@ async function sendValidateMail(req, res) {
       .json({ message: "Lỗi máy chủ, vui lòng thử lại sau" });
   }
 }
+function refreshToken(req, res) {}
+
+async function loginWithGoogle(req, res) {
+  const client_id = process.env.GOOGLE_OAUTH_CLIENT_ID;
+  const client = new OAuth2Client(client_id);
+  const { token } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.client_id,
+  });
+  const { name, email, picture } = ticket.getPayload();
+  res.status(201);
+  res.json(user);
+}
 module.exports = {
   Login,
   Register,
@@ -103,4 +118,5 @@ module.exports = {
   checkEmail,
   changePassword,
   sendValidateMail,
+  refreshToken,
 };

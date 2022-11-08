@@ -8,4 +8,6 @@ router.post(
   parser.array("vehicle"),
   vehicleController.AddVehicle
 );
+// router.get('/:id', //get detail vehicle)
+router.get("/models", vehicleController.GetModels);
 module.exports = router;
