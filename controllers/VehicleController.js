@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Vehicle = require("../models/Vehicle");
+const registerVehicle = require("../models/VehicleRegister");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 
@@ -13,7 +13,7 @@ async function RegisterVehicle(req, res) {
     // }
     //kiem tra bien so xe sau
     const result = await uploadArray(req.files);
-    const newVehicle = new Vehicle(req.body);
+    const newVehicle = new registerVehicle(req.body);
     newVehicle.vehicleimage = result.map((item) => item.url);
     newVehicle.seats = newVehicle.type.split("-").pop();
     newVehicle.userId = req.user.userId;
