@@ -11,13 +11,20 @@ async function RegisterVehicle(req, res) {
     //   user.carowner = true;
     //   user.save();
     // }
-
+    //kiem tra bien so xe sau
     const result = await uploadArray(req.files);
     const newVehicle = new Vehicle(req.body);
     newVehicle.vehicleimage = result.map((item) => item.url);
     newVehicle.seats = newVehicle.type.split("-").pop();
     newVehicle.userId = req.user.userId;
-  } catch (error) {}
+    await newVehicle.save();
+    return res.status(200).json({ message: "Đăng ký xe thành công" });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ message: "Lỗi hệ thống, vui lòng thử lại sau" });
+  }
 }
 function GetModels(req, res) {
   const vehicleBranch = req.query.brand;
