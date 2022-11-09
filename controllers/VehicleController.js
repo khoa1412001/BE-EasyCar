@@ -3,20 +3,20 @@ const Vehicle = require("../models/Vehicle");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 
-async function AddVehicle(req, res) {
+async function RegisterVehicle(req, res) {
   try {
-    const user = User.findById(req.user.userId);
-    if (!user.carowner) {
-      user.carowner = true;
-      user.save();
-    }
+    //đổi trạng thái carowned của user
+    // const user = User.findById(req.user.userId);
+    // if (!user.carowner) {
+    //   user.carowner = true;
+    //   user.save();
+    // }
 
     const result = await uploadArray(req.files);
-    const newVehicle = new Vehicle();
-
+    const newVehicle = new Vehicle(req.body);
+    newVehicle.vehicleimage = result.map((item) => item.url);
+    newVehicle.seats = newVehicle.type.split("-").pop();
     newVehicle.userId = req.user.userId;
-
-    //đổi trạng thái carowned của user
   } catch (error) {}
 }
 function GetModels(req, res) {
@@ -24,4 +24,4 @@ function GetModels(req, res) {
   if (!vehicleBranch) return res.status(200).json({ data: getVehicleBrand() });
   return res.status(200).json({ data: getVehicleModel(vehicleBranch) });
 }
-module.exports = { AddVehicle, GetModels };
+module.exports = { RegisterVehicle, GetModels };

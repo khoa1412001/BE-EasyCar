@@ -6,6 +6,7 @@ const UserVerificationRequestSchema = new Schema(
   {
     userId: {
       type: ObjectId,
+      ref: "User",
       required: true,
     },
     username: {

@@ -7,7 +7,7 @@ router.post("/update", passport, userController.UpdateUser);
 router.post(
   "/update-avatar",
   passport,
-  parser.array("avatar"),
+  parser.single("avatar"),
   userController.UpdateAvatar
 );
 router.post(

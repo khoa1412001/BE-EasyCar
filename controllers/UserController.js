@@ -24,9 +24,8 @@ async function UpdateAvatar(req, res) {
   try {
     //xu ly xoa hinh anh cu~
     const user = await User.findById(req.user.userId);
-    const result = uploadArray(req.files);
-    console.log(result);
-    //user.avatar = result.url;
+    const result = await uploadSingle(req.files);
+    user.avatar = result.url;
     await user.save();
     return res
       .status(200)

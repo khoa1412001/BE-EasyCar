@@ -3,10 +3,10 @@ const vehicleController = require("../controllers/VehicleController");
 const parser = require("../middlewares/Parser");
 const passport = require("../middlewares/VerifyJWT");
 router.post(
-  "/add-vehicle",
+  "/register",
   passport,
-  parser.array("vehicle"),
-  vehicleController.AddVehicle
+  parser.array("vehicleimage"),
+  vehicleController.RegisterVehicle
 );
 // router.get('/:id', //get detail vehicle)
 router.get("/models", vehicleController.GetModels);
