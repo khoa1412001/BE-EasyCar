@@ -49,15 +49,8 @@ const VehicleRegisterSchema = new Schema(
     seats: {
       type: Number,
     },
-
     licenseplate: {
       type: String,
-    },
-    rentalDateStart: {
-      type: Date,
-    },
-    rentalDateEnd: {
-      type: Date,
     },
     rentprice: {
       type: Number,

@@ -14,6 +14,31 @@ const VehicleSchema = new Schema(
     model: {
       type: String,
     },
+    fueltype: {
+      type: String,
+    },
+    fuelconsumption: {
+      type: Number,
+    },
+    description: {
+      type: String,
+      default: "",
+    },
+    kmlimit: {
+      type: Number,
+      default: 0,
+    },
+    priceover: {
+      type: Number,
+      default: 0,
+    },
+    rentterm: {
+      type: String,
+      default: "",
+    },
+    year: {
+      type: String,
+    },
     transmission: {
       type: String,
     },
@@ -22,9 +47,6 @@ const VehicleSchema = new Schema(
     },
     seats: {
       type: Number,
-    },
-    location: {
-      type: String,
     },
     licenseplate: {
       type: String,
@@ -35,7 +57,7 @@ const VehicleSchema = new Schema(
     rentalDateEnd: {
       type: Date,
     },
-    price: {
+    rentprice: {
       type: Number,
     },
     rating: {
@@ -48,6 +70,9 @@ const VehicleSchema = new Schema(
     status: {
       type: Boolean,
       default: false,
+    },
+    vehicleimage: {
+      type: [String],
     },
   },
   { timestamps: true }

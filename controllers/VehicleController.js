@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const registerVehicle = require("../models/VehicleRegister");
+const registerVehicle = require("../models/Vehicle");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 
