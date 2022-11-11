@@ -11,8 +11,9 @@ async function GetVehicleWithFilter(req, res) {
   const days = Math.round(diffInTime / oneDay);
 
   var filter = {};
-  if (req.body.cartype !== "ALL" && req.body.cartype) {
+  if (req.body.cartype.length() !== 1) {
     filter.type = req.body.cartype;
+    filter.type.shift();
   }
   if (req.body.price !== "ALL" && req.body.price) {
     switch (req.body.price) {
