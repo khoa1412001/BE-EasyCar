@@ -74,6 +74,9 @@ const VehicleSchema = new Schema(
     vehicleimage: {
       type: [String],
     },
+    modelimage: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

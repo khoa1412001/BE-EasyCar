@@ -62,6 +62,9 @@ const VehicleRegisterSchema = new Schema(
     vehicleimage: {
       type: [String],
     },
+    modelimage: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
