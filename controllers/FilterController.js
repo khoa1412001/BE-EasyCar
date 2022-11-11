@@ -42,8 +42,9 @@ async function GetVehicleWithFilter(req, res) {
   if (req.body.transmission !== "ALL" && req.body.transmission) {
     filter.transmission = req.body.transmission;
   }
-  if (req.body.rating != "ALL" && req.body.rating) {
-    filter.rating = { $gte: Number(req.body.rating.split("+")[0]) };
+  var rating = req.body.rating.find((item) => item.selected);
+  if (rating.value !== "ALL") {
+    filter.rating = { $gte: Number(rating.value.split("+")[0]) };
   }
   try {
     var totalVehicle = 0;
