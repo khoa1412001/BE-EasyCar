@@ -2,7 +2,7 @@ const Vehicle = require("../models/Vehicle");
 const moment = require("moment");
 
 async function GetVehicleWithFilter(req, res) {
-  let perPage = 4; //10
+  let perPage = 10; //10
   let page = Number(req.body.page) || 1;
   let startDate = new Date(Number(req.body.startDate));
   let endDate = new Date(Number(req.body.endDate));
@@ -43,7 +43,7 @@ async function GetVehicleWithFilter(req, res) {
     filter.transmission = req.body.transmission;
   }
   var rating = req.body.rating.find((item) => item.selected);
-  if (rating.value !== "ALL") {
+  if (rating.value !== "All") {
     filter.rating = { $gte: Number(rating.value.split("+")[0]) };
   }
   try {
