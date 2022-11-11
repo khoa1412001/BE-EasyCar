@@ -35,12 +35,16 @@ async function GetVehicleWithFilter(req, res) {
   if (req.body.transmission !== "ALL" && req.body.transmission) {
     filter.transmission = req.body.transmission;
   }
+  if (req.body.rating != "ALL" && req.body.rating) {
+     filter.rating = {$gte: Number(req.body.rating.split('+')[0])}
+  }
   try {
     var totalVehicle = 0;
     if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
     let results = await Vehicle.find(filter)
       .skip(perPage * page - perPage)
       .limit(perPage);
+    results.map(result => result.totalPrice = result.rentprice*1.1*req.body.)
     return res.status(200).json({
       totalPage: Math.ceil(totalVehicle / perPage),
       data: results,
