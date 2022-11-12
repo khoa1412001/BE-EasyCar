@@ -31,4 +31,7 @@ function GetModels(req, res) {
   if (!vehicleBranch) return res.status(200).json({ data: getVehicleBrand() });
   return res.status(200).json({ data: getVehicleModel(vehicleBranch) });
 }
+async function DetailVehicle(req, res) {
+  const vehicleId = req.params.id;
+}
 module.exports = { RegisterVehicle, GetModels };

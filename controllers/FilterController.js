@@ -4,12 +4,11 @@ const moment = require("moment");
 async function GetVehicleWithFilter(req, res) {
   let perPage = 10; //10
   let page = Number(req.body.page) || 1;
-  let startDate = new Date(Number(req.body.startDate));
-  let endDate = new Date(Number(req.body.endDate));
+  let startDate = new Date(Number(req.body.startdate) * 1000);
+  let endDate = new Date(Number(req.body.enddate) * 1000);
   const oneDay = 1000 * 60 * 60 * 24;
   const diffInTime = endDate.getTime() - startDate.getTime();
-  const days = Math.round(diffInTime / oneDay);
-
+  const days = Math.ceil(diffInTime / oneDay);
   var filter = {};
   if (req.body.cartype.length !== 1) {
     filter.type = req.body.cartype;
@@ -51,10 +50,11 @@ async function GetVehicleWithFilter(req, res) {
     if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
     let results = await Vehicle.find(filter)
       .skip(perPage * page - perPage)
-      .limit(perPage);
-    results.map(
-      (result) => (result.totalPrice = result.rentprice * 1.1 * days)
-    );
+      .limit(perPage)
+      .lean();
+    results.map((result) => {
+      result.totalprice = Math.round(result.rentprice * 1.1 * days);
+    });
     return res.status(200).json({
       totalPage: Math.ceil(totalVehicle / perPage),
       data: results,
