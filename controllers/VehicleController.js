@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Vehicle = require("../models/Vehicle");
 const registerVehicle = require("../models/Vehicle");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
@@ -33,5 +34,18 @@ function GetModels(req, res) {
 }
 async function DetailVehicle(req, res) {
   const vehicleId = req.params.id;
+  let startDate = new Date(Number(req.query.startdate) * 1000);
+  let endDate = new Date(Number(req.query.enddate) * 1000);
+  const oneDay = 1000 * 60 * 60 * 24;
+  let diffInTime = endDate.getTime() - startDate.getTime();
+  let days = Math.ceil(diffInTime / oneDay);
+  try {
+    const vehicle = Vehicle.findById(vehicleId).lean();
+    vehicle.totalprice = Math.round(result.rentprice * 1.1 * days);
+    return res.status(200).json({ data: vehicle });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: "Lỗi hệ thống" });
+  }
 }
 module.exports = { RegisterVehicle, GetModels };
