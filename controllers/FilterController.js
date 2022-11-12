@@ -37,7 +37,7 @@ async function GetVehicleWithFilter(req, res) {
     filter.brand = req.body.carbrand;
   }
   if (req.body.fueltype !== "ALL" && req.body.fueltype) {
-    filter.fueltype = req.body.cartype;
+    filter.fueltype = req.body.fueltype;
   }
   if (req.body.transmission !== "ALL" && req.body.transmission) {
     filter.transmission = req.body.transmission;
