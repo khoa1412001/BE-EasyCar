@@ -41,6 +41,8 @@ async function DetailVehicle(req, res) {
   let days = Math.ceil(diffInTime / oneDay);
   try {
     const vehicle = Vehicle.findById(vehicleId).lean();
+    vehicle.servicefee = Math.round(result.rentprice * 0.1 * days);
+    vehicle.rentfee = Math.round(result.rentprice * days);
     vehicle.totalprice = Math.round(result.rentprice * 1.1 * days);
     return res.status(200).json({ data: vehicle });
   } catch (error) {
