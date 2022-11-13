@@ -2,9 +2,9 @@ var mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 const TestSchema = new Schema({
-    testName: {
-        type: String
-    }
-})
+  testName: {
+    type: String,
+  },
+});
 
-module.exports = mongoose.model("Women", TestSchema);
+module.exports = mongoose.model("testingnocap", TestSchema);

@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const Vehicle = require("../models/Vehicle");
-const registerVehicle = require("../models/Vehicle");
+const registerVehicle = require("../models/VehicleRegister");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 
@@ -13,9 +13,9 @@ async function RegisterVehicle(req, res) {
     //   user.save();
     // }
     //kiem tra bien so xe sau
-    const result = await uploadArray(req.files);
+    const vehicle = await uploadArray(req.files);
     const newVehicle = new registerVehicle(req.body);
-    newVehicle.vehicleimage = result.map((item) => item.url);
+    newVehicle.vehicleimage = vehicle.map((item) => item.url);
     newVehicle.seats = newVehicle.type.split("-").pop();
     newVehicle.userId = req.user.userId;
     await newVehicle.save();
@@ -40,14 +40,16 @@ async function DetailVehicle(req, res) {
   let diffInTime = endDate.getTime() - startDate.getTime();
   let days = Math.ceil(diffInTime / oneDay);
   try {
-    const vehicle = Vehicle.findById(vehicleId).lean();
-    vehicle.servicefee = Math.round(result.rentprice * 0.1 * days);
-    vehicle.rentfee = Math.round(result.rentprice * days);
-    vehicle.totalprice = Math.round(result.rentprice * 1.1 * days);
+    const vehicle = await Vehicle.findById(vehicleId)
+      .populate("userId", "username location avatar")
+      .lean();
+    vehicle.servicefee = Math.round(vehicle.rentprice * 0.1 * days);
+    vehicle.rentfee = Math.round(vehicle.rentprice * days);
+    vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days);
     return res.status(200).json({ data: vehicle });
   } catch (error) {
     console.log(error.message);
     return res.status(400).json({ message: "Lỗi hệ thống" });
   }
 }
-module.exports = { RegisterVehicle, GetModels };
+module.exports = { RegisterVehicle, GetModels, DetailVehicle };

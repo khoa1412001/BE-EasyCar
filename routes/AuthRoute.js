@@ -92,4 +92,5 @@ router.get(
 router.post("/check-email", authController.checkEmail); //Kiem tra email
 router.post("/change-password", passport, authController.changePassword); //Doi mat khau
 router.get("/send-email", passport, authController.sendValidateMail);
+router.post("/google", authController.loginWithGoogle);
 module.exports = router;

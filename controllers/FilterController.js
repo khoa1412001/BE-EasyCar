@@ -48,7 +48,11 @@ async function GetVehicleWithFilter(req, res) {
   try {
     var totalVehicle = 0;
     if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
-    let results = await Vehicle.find(filter)
+    let results = await Vehicle.find(
+      filter,
+      "brand model fueltype fuelconsumption transmission seats rating modelimage"
+    )
+      .populate("userId", "location")
       .skip(perPage * page - perPage)
       .limit(perPage)
       .lean();

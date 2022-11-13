@@ -8,6 +8,7 @@ var mongoose = require("mongoose"),
   jwtService = require("../services/JWTService"),
   { OAuth2Client } = require("google-auth-library");
 dotenv.config();
+const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
 function Register(req, res) {
   var newUser = new User(req.body);
@@ -100,16 +101,20 @@ async function sendValidateMail(req, res) {
 function refreshToken(req, res) {}
 
 async function loginWithGoogle(req, res) {
-  const client_id = process.env.GOOGLE_OAUTH_CLIENT_ID;
-  const client = new OAuth2Client(client_id);
+  console.log(req.body);
   const { token } = req.body;
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.client_id,
-  });
+
+  const ticket = await client.getTokenInfo(token);
+  console.log(ticket);
   const { name, email, picture } = ticket.getPayload();
-  res.status(201);
-  res.json(user);
+  // const user = await db.user.upsert({
+  //   where: { email: email },
+  //   update: { name, picture },
+  //   create: { name, email, picture },
+  // });
+  console.log(`${name}:${email}:${picture}`);
+  // console.log(ticket);
+  res.status(201).json({ message: "Susge" });
 }
 module.exports = {
   Login,
@@ -119,4 +124,5 @@ module.exports = {
   changePassword,
   sendValidateMail,
   refreshToken,
+  loginWithGoogle,
 };
