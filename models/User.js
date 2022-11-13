@@ -9,11 +9,9 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
     },
     phoneNumber: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -41,7 +39,6 @@ const UserSchema = new Schema(
     },
     socialId: {
       type: String,
-      required: true,
     },
     verification: {
       type: Boolean,
@@ -62,6 +59,10 @@ const UserSchema = new Schema(
     gender: {
       type: String,
       default: "MALE",
+    },
+    isgoogleaccount: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
