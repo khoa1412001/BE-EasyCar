@@ -15,6 +15,7 @@ async function authenticateToken(req, res, next) {
       role: user.role,
     };
     next();
+    return;
   } catch (error) {
     console.log(error.message);
   }
@@ -30,10 +31,11 @@ async function authenticateToken(req, res, next) {
       role: userGoogle.role,
     };
     next();
+    return;
   } catch (error) {
     console.log(error.message);
-    return res.status(403).json({ message: "Unauthenticated" });
   }
+  return res.status(403).json({ message: "Unauthenticated" });
 }
 
 module.exports = authenticateToken;

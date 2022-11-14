@@ -38,7 +38,11 @@ function Login(req, res) {
         message: "Lỗi máy chủ, vui lòng thử lại sau.",
       });
     }
-    if (user === null || !bcrypt.compareSync(req.body.password, user.password))
+    if (
+      !user ||
+      !user.password ||
+      !bcrypt.compareSync(req.body.password, user.password)
+    )
       return res.status(400).json({
         message: "Sai tài khoản hoặc mật khẩu, vui lòng kiểm tra lại!",
       });

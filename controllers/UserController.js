@@ -1,7 +1,8 @@
 const User = require("../models/User");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
-const { uploadSingle, uploadArray } = require("../utils/cloudinary");
+const { uploadSingle, uploadArray } = require("../utils/Cloudinary");
 const statusList = require("../configs/StatusList");
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -67,5 +68,23 @@ async function VerifyUser(req, res) {
       .json({ message: "Lỗi hệ thống xin vui lòng thử lại sau" });
   }
 }
-async function GetRentalHistory(req, res) {}
+async function GetRentalHistory(req, res) {
+  try {
+    const rentalHistory = await VehicleRentalHistory.find({
+      userid: req.user.userId,
+    })
+      .populate(
+        "Vehicle",
+        "brand model fueltype fuelconsumption transmission seats modelimage"
+      )
+      .populate("User", "location")
+      .lean();
+    return res.status(200).json({ data: rentalHistory });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(400)
+      .json({ message: "Không thể lấy được lịch sử thuê xe" });
+  }
+}
 module.exports = { UpdateUser, UpdateAvatar, VerifyUser, GetRentalHistory };

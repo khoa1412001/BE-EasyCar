@@ -18,6 +18,7 @@ const VehicleRentalHistorySchema = new Schema({
   },
   rating: {
     type: Number,
+    default: 0,
   },
   totalPrice: {
     type: Number,
