@@ -14,4 +14,5 @@ router.post(
   parser.single("driverlincenseimg"),
   userController.VerifyUser
 );
+router.get("/rentalhistory", userController.GetRentalHistory);
 module.exports = router;

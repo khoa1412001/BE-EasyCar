@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
-var uuid = require("node-uuid");
 const Schema = mongoose.Schema;
-const CarRentalHistorySchema = new Schema({
-  id: {
-    type: String,
-    default: uuid.v1,
-  },
+const ObjectId = Schema.Types.ObjectId;
+const VehicleRentalHistorySchema = new Schema({
   userid: {
-    type: String,
+    type: ObjectId,
+    ref: "User",
   },
   carid: {
-    type: String,
+    type: ObjectId,
+    ref: "Vehicle",
   },
   rentalDateStart: {
     type: Date,
@@ -25,4 +23,7 @@ const CarRentalHistorySchema = new Schema({
     type: Number,
   },
 });
-module.exports = mongoose.model("CarRentalHistory", CarRentalHistorySchema);
+module.exports = mongoose.model(
+  "VehicleRentalHistory",
+  VehicleRentalHistorySchema
+);

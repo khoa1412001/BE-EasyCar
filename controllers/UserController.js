@@ -61,10 +61,11 @@ async function VerifyUser(req, res) {
       message: "Tạo yêu cầu xác thực tài khoản thành công",
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res
       .status(500)
       .json({ message: "Lỗi hệ thống xin vui lòng thử lại sau" });
   }
 }
-module.exports = { UpdateUser, UpdateAvatar, VerifyUser };
+async function GetRentalHistory(req, res) {}
+module.exports = { UpdateUser, UpdateAvatar, VerifyUser, GetRentalHistory };

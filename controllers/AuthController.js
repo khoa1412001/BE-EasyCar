@@ -6,9 +6,12 @@ var mongoose = require("mongoose"),
   sendMail = require("../services/Sendmail"),
   User = require("../models/User"),
   jwtService = require("../services/JWTService"),
-  { OAuth2Client } = require("google-auth-library");
+  { OAuth2Client } = require("google-auth-library"),
+  axios = require("axios");
 dotenv.config();
-const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
+const googleClient = new OAuth2Client({
+  clientId: `${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
+});
 
 function Register(req, res) {
   var newUser = new User(req.body);
@@ -101,20 +104,30 @@ async function sendValidateMail(req, res) {
 function refreshToken(req, res) {}
 
 async function loginWithGoogle(req, res) {
-  console.log(req.body);
   const { token } = req.body;
-
   const ticket = await client.getTokenInfo(token);
-  console.log(ticket);
-  const { name, email, picture } = ticket.getPayload();
-  // const user = await db.user.upsert({
-  //   where: { email: email },
-  //   update: { name, picture },
-  //   create: { name, email, picture },
-  // });
-  console.log(`${name}:${email}:${picture}`);
-  // console.log(ticket);
-  res.status(201).json({ message: "Susge" });
+  const userCount = await User.countDocuments({ email: ticket.email });
+  if (userCount !== 0)
+    return res.status(200).json({ message: "Đăng nhập thành công" });
+
+  try {
+    const result = await axios.get(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`
+    );
+    const newUser = new User();
+    newUser.username = result.data.name;
+    newUser.avatar = result.data.picture;
+    newUser.email = result.data.email;
+    newUser.status = result.data.email_verified;
+    newUser.isgoogleaccount = true;
+    await newUser.save();
+    return res.status(200).json({ message: "Tạo tài khoản thành công" });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(400)
+      .json({ message: "Đã xảy ra lỗi vui lòng thử lại sau" });
+  }
 }
 module.exports = {
   Login,
