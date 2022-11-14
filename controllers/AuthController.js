@@ -109,7 +109,7 @@ function refreshToken(req, res) {}
 
 async function loginWithGoogle(req, res) {
   const { token } = req.body;
-  const ticket = await client.getTokenInfo(token);
+  const ticket = await googleClient.getTokenInfo(token);
   const userCount = await User.countDocuments({ email: ticket.email });
   if (userCount !== 0)
     return res.status(200).json({ message: "Đăng nhập thành công" });
