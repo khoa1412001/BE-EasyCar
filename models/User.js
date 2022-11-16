@@ -60,6 +60,18 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    bank: {
+      type: String,
+      default: "",
+    },
+    banknumber: {
+      type: String,
+      default: "",
+    },
+    bankaccountname: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
