@@ -3,7 +3,6 @@ const searchAddressRoute = require("./SearchAddressRoute");
 const userRoute = require("./UserRoute");
 const filterRoute = require("./FilterRoute");
 const vehicleRoute = require("./VehicleRoute");
-const testRoute = require("./TestRoute");
 const adminRoute = require("./AdminRoute");
 
 const role = require("../configs/RoleList");
@@ -16,7 +15,6 @@ function route(app) {
   app.use("/api/vehicle", vehicleRoute);
   app.use("/api/search-address", searchAddressRoute);
   app.use("/api/filter", filterRoute);
-  app.use("/api/test", testRoute);
   app.use("/api/admin", passport, verifyRoles(role.ADMIN), adminRoute);
 }
 

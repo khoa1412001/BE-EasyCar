@@ -12,6 +12,10 @@ const VehicleRentalHistorySchema = new Schema({
     ref: "Vehicle",
     required: true,
   },
+  rentalStatusId: {
+    type: ObjectId,
+    ref: "CarRentalStatus",
+  },
   rentalDateStart: {
     type: Date,
   },
@@ -24,6 +28,10 @@ const VehicleRentalHistorySchema = new Schema({
   },
   totalPrice: {
     type: Number,
+  },
+  carstautsupdate: {
+    type: Boolean,
+    default: false,
   },
 });
 module.exports = mongoose.model(

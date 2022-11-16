@@ -44,10 +44,6 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    carowner: {
-      type: Boolean,
-      default: false,
-    },
     balance: {
       type: Number,
       default: 0,
