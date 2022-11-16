@@ -15,4 +15,5 @@ router.post(
   userController.VerifyUser
 );
 router.get("/rentalhistory", userController.GetRentalHistory);
+router.get("/ownedvehicle", userController.GetOwnedVehicles);
 module.exports = router;

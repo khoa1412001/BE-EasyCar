@@ -3,6 +3,7 @@ const UserVerificationRequest = require("../models/UserVerificationRequest");
 const { uploadSingle, uploadArray } = require("../utils/Cloudinary");
 const statusList = require("../configs/StatusList");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const Vehicle = require("../models/Vehicle");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -73,11 +74,12 @@ async function GetRentalHistory(req, res) {
     const rentalHistory = await VehicleRentalHistory.find({
       userid: req.user.userId,
     })
-      .populate(
-        "Vehicle",
-        "brand model fueltype fuelconsumption transmission seats modelimage"
-      )
-      .populate("User", "location")
+      .populate({
+        path: "vehicleId",
+        select: "brand model fueltype transmission seats modelimage",
+        populate: { path: "ownerId" },
+      })
+      .populate("userId", "location")
       .lean();
     return res.status(200).json({ data: rentalHistory });
   } catch (error) {
@@ -87,4 +89,26 @@ async function GetRentalHistory(req, res) {
       .json({ message: "Không thể lấy được lịch sử thuê xe" });
   }
 }
-module.exports = { UpdateUser, UpdateAvatar, VerifyUser, GetRentalHistory };
+async function GetOwnedVehicles(req, res) {
+  try {
+    const ownedVehicle = await Vehicle.find(
+      { ownerId: req.user.userId },
+      "brand model fueltype transmission seats rating modelimage rentprice"
+    )
+      .populate("ownerId", "location")
+      .lean();
+    return res.status(200).json({ data: ownedVehicle });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(400)
+      .json({ message: "Đã xảy ra lỗi vui lòng thử lại sau!" });
+  }
+}
+module.exports = {
+  UpdateUser,
+  UpdateAvatar,
+  VerifyUser,
+  GetRentalHistory,
+  GetOwnedVehicles,
+};
