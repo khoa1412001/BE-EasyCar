@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const VehicleSchema = new Schema(
   {
-    userId: {
+    ownerId: {
       type: ObjectId,
       ref: "User",
       required: true,

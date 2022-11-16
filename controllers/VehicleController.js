@@ -41,11 +41,12 @@ async function DetailVehicle(req, res) {
   let days = Math.ceil(diffInTime / oneDay);
   try {
     const vehicle = await Vehicle.findById(vehicleId)
-      .populate("userId", "username location avatar")
+      .populate("ownerId", "username location avatar")
       .lean();
     vehicle.servicefee = Math.round(vehicle.rentprice * 0.1 * days);
     vehicle.rentfee = Math.round(vehicle.rentprice * days);
     vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days);
+    vehicle.days = days;
     return res.status(200).json({ data: vehicle });
   } catch (error) {
     console.log(error.message);
