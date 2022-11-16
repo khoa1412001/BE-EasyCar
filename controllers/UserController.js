@@ -77,10 +77,13 @@ async function GetRentalHistory(req, res) {
       .populate({
         path: "vehicleId",
         select: "brand model fueltype transmission seats modelimage",
-        populate: { path: "ownerId" },
+        populate: { path: "ownerId", select: "location" },
       })
-      .populate("userId", "location")
       .lean();
+    rentalHistory.map((vehicle) => {
+      vehicle.isrefundable = Date.now() < vehicle.rentalDateStart;
+      delete vehicle.vehicleId.ownerId._id;
+    });
     return res.status(200).json({ data: rentalHistory });
   } catch (error) {
     console.log(error.message);
