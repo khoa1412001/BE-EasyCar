@@ -28,7 +28,29 @@ async function GetUserList(req, res) {
   }
 }
 
-function GetVehicleList(req, res) {}
+async function GetVehicleList(req, res) {
+  const perPage = 3;
+  const page = req.query.page || 1;
+  var totalPage = 0;
+  try {
+    if (page === 1) {
+      let totalRequest = await Vehicle.countDocuments();
+      totalPage = Math.ceil(totalRequest / perPage);
+    }
+    const data = await Vehicle.find()
+      .select(
+        "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+      )
+      .populate("ownerId", "email username phoneNumber")
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .lean();
+    return res.status(200).json({ totalPage: totalPage, data: data });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(400).json({ message: "Lỗi hệ thống" });
+  }
+}
 
 async function GetVehicleRegisterList(req, res) {
   const perPage = 3;

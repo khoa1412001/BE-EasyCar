@@ -8,7 +8,6 @@ router.post(
   parser.array("vehicleimage"),
   vehicleController.RegisterVehicle
 );
-// router.get('/:id', //get detail vehicle)
 router.get("/models", vehicleController.GetModels);
 router.get("/:id", vehicleController.DetailVehicle);
 module.exports = router;

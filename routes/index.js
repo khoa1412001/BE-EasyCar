@@ -15,7 +15,12 @@ function route(app) {
   app.use("/api/vehicle", vehicleRoute);
   app.use("/api/search-address", searchAddressRoute);
   app.use("/api/filter", filterRoute);
-  app.use("/api/admin", passport, verifyRoles(role.ADMIN), adminRoute);
+  app.use(
+    "/api/admin",
+    passport,
+    verifyRoles(role.ADMIN, role.STAFF),
+    adminRoute
+  );
 }
 
 module.exports = route;
