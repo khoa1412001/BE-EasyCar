@@ -72,7 +72,7 @@ async function VerifyUser(req, res) {
 async function GetRentalHistory(req, res) {
   try {
     const rentalHistory = await VehicleRentalHistory.find({
-      userid: req.user.userId,
+      userId: req.user.userId,
     })
       .populate({
         path: "vehicleId",

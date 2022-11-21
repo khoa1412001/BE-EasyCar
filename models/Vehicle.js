@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
+const carStatusList = require("../configs/CarStatus.js");
 const VehicleSchema = new Schema(
   {
     ownerId: {
@@ -68,8 +69,8 @@ const VehicleSchema = new Schema(
       type: Number,
     },
     status: {
-      type: Boolean,
-      default: false,
+      type: Number,
+      default: carStatusList.ALLOW,
     },
     vehicleimage: {
       type: [String],
