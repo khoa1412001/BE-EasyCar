@@ -12,5 +12,12 @@ function generateToken(id, role) {
 
   return accessToken;
 }
+function generateMailToken(email) {
+  payload = { email: email };
+  const token = jwt.sign(payload, process.env.MAIL_VALIDATE_KEY, {
+    expiresIn: "30m",
+  });
+  return token;
+}
 
-module.exports = { generateToken };
+module.exports = { generateToken, generateMailToken };

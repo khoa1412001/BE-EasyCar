@@ -4,6 +4,7 @@ const userRoute = require("./UserRoute");
 const filterRoute = require("./FilterRoute");
 const vehicleRoute = require("./VehicleRoute");
 const adminRoute = require("./AdminRoute");
+const testRoute = require("./TestRoute");
 
 const role = require("../configs/RoleList");
 const passport = require("../middlewares/VerifyJWT");
@@ -21,6 +22,7 @@ function route(app) {
     verifyRoles(role.ADMIN, role.STAFF),
     adminRoute
   );
+  app.use("/api/test", testRoute);
 }
 
 module.exports = route;
