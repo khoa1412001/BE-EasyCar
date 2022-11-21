@@ -29,7 +29,7 @@ const VehicleRentalHistorySchema = new Schema({
   totalPrice: {
     type: Number,
   },
-  carstautsupdate: {
+  carstatusupdate: {
     type: Boolean,
     default: false,
   },
