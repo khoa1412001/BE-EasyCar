@@ -145,16 +145,14 @@ async function loginWithGoogle(req, res) {
 async function validateMail(req, res) {
   try {
     const token = req.params.token;
-    const data = jwt.verify(token, process.env.MAIN_VALIDATE_KEY);
+    const data = jwt.verify(token, process.env.MAIL_VALIDATE_KEY);
     const user = await User.find({ email: data.email });
     user.status = true;
     await user.save();
     return res.status(200).json({ message: "Xác thực thành công" });
   } catch (error) {
     console.log(error.message);
-    return res
-      .status(400)
-      .json({ message: "Link xác thực tài khoản đã hết hạn" });
+    return res.status(400).json({ message: "Xác thực thất bại" });
   }
 }
 module.exports = {

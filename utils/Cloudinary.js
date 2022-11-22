@@ -8,7 +8,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 function uploadSingle(file) {
   return new Promise((resolve, reject) => {
     let stream = cloudinary.uploader.upload_stream(
@@ -30,12 +29,10 @@ function uploadSingle(file) {
 }
 
 async function uploadArray(files) {
-  const promiseList = files.map(file => uploadSingle(file))
-  return await Promise.all(promiseList).then(results => {
-    // console.log(results)
-    return results
-  }) 
+  const promiseList = files.map((file) => uploadSingle(file));
+  return await Promise.all(promiseList);
 }
 module.exports = {
-  uploadArray, uploadSingle
-}
+  uploadArray,
+  uploadSingle,
+};
