@@ -17,13 +17,13 @@ async function Register(req, res) {
   var newUser = new User(req.body);
   try {
     newUser.password = bcrypt.hashSync(req.body.password, 10);
-    newUser.save();
+    await newUser.save();
     const subject = "Kích hoạt tài khoản";
     const token = jwtService.generateMailToken(newUser.email);
     var context =
       "Bấm vào đường link bên dưới để xác thực tài khoản\n" +
       `http://localhost:5000/validate/${token}`;
-    await sendMail(newUser.email, subject, context);
+    sendMail(newUser.email, subject, context);
     return res.status(201).json({
       message: "Tạo tài khoản thành công, kiểm tra mail để xác thực tài khoản",
     });
@@ -146,7 +146,7 @@ async function validateMail(req, res) {
   try {
     const token = req.params.token;
     const data = jwt.verify(token, process.env.MAIL_VALIDATE_KEY);
-    const user = await User.find({ email: data.email });
+    const user = await User.findOne({ email: data.email });
     user.status = true;
     await user.save();
     return res.status(200).json({ message: "Xác thực thành công" });
