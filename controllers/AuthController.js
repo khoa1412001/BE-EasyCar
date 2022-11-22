@@ -22,7 +22,7 @@ async function Register(req, res) {
     const token = jwtService.generateMailToken(newUser.email);
     var context =
       "Bấm vào đường link bên dưới để xác thực tài khoản\n" +
-      `http://localhost:5000/validate/${token}`;
+      `http://localhost:3000/validate?token=${token}`;
     sendMail(newUser.email, subject, context);
     return res.status(201).json({
       message: "Tạo tài khoản thành công, kiểm tra mail để xác thực tài khoản",
