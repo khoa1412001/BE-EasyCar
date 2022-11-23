@@ -43,9 +43,11 @@ async function DetailVehicle(req, res) {
     const vehicle = await Vehicle.findById(vehicleId)
       .populate("ownerId", "username location avatar")
       .lean();
-    vehicle.servicefee = Math.round(vehicle.rentprice * 0.1 * days);
-    vehicle.rentfee = Math.round(vehicle.rentprice * days);
-    vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days);
+    vehicle.servicefee = Math.round(vehicle.rentprice * 0.1);
+    vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days );
+    vehicle.basicinsurance = Math.round(vehicle.totalprice * 0.085)
+    vehicle.premiuminsurance = Math.round(vehicle.totalprice * 0.15)
+    vehicle.totalprice = Math.round(vehicle.totalprice + vehicle.basicinsurance)
     vehicle.days = days;
     return res.status(200).json({ data: vehicle });
   } catch (error) {

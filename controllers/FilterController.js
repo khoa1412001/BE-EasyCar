@@ -58,6 +58,8 @@ async function GetVehicleWithFilter(req, res) {
       .lean();
     results.map((result) => {
       result.totalprice = Math.round(result.rentprice * 1.1 * days);
+      result.basicinsurance = Math.round(result.totalprice * 0.085);
+      result.totalprice = Math.round(result.totalprice + result.basicinsurance );
     });
     return res.status(200).json({
       totalPage: Math.ceil(totalVehicle / perPage),
