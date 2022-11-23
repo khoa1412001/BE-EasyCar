@@ -46,6 +46,10 @@ const VehicleRentalHistorySchema = new Schema({
     type: Boolean,
     default: false,
   },
+  status: {
+    type: Boolean,
+    default: false,
+  },
 });
 module.exports = mongoose.model(
   "VehicleRentalHistory",
