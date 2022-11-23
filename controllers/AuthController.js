@@ -69,6 +69,11 @@ function getUserData(req, res) {
       phoneNumber: user.phoneNumber,
       location: user.location,
       gender: user.gender,
+      balance: user.balance,
+      verifycation: user.verifycation,
+      bank: user.bank,
+      bankaccountname: user.bankaccountname,
+      banknumber: user.banknumber,
     });
   });
 }
