@@ -22,6 +22,9 @@ const CarStatusSchema = new Schema({
   statusimage: {
     type: [String],
   },
+  statusvideo: {
+    type: String
+  },
 },
 { timestamps: true });
 module.exports = mongoose.model("CarStatus", CarStatusSchema);

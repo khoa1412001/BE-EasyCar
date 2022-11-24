@@ -70,7 +70,7 @@ function getUserData(req, res) {
       location: user.location,
       gender: user.gender,
       balance: user.balance,
-      verifycation: user.verifycation,
+      verification: user.verification,
       bank: user.bank,
       bankaccountname: user.bankaccountname,
       banknumber: user.banknumber,
