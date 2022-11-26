@@ -1,5 +1,4 @@
 const Vehicle = require("../models/Vehicle");
-const moment = require("moment");
 
 async function GetVehicleWithFilter(req, res) {
   let perPage = 10; //10
@@ -48,6 +47,7 @@ async function GetVehicleWithFilter(req, res) {
   try {
     var totalVehicle = 0;
     if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
+    console.log(totalVehicle);
     let results = await Vehicle.find(
       filter,
       "brand model fueltype transmission seats rating modelimage rentprice"
@@ -59,14 +59,14 @@ async function GetVehicleWithFilter(req, res) {
     results.map((result) => {
       result.totalprice = Math.round(result.rentprice * 1.1 * days);
       result.basicinsurance = Math.round(result.totalprice * 0.085);
-      result.totalprice = Math.round(result.totalprice + result.basicinsurance );
+      result.totalprice = Math.round(result.totalprice + result.basicinsurance);
     });
     return res.status(200).json({
       totalPage: Math.ceil(totalVehicle / perPage),
       data: results,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res.status(400).json({ message: "Lỗi hệ thống" });
   }
 }

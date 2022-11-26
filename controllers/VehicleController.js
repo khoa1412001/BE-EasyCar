@@ -3,6 +3,7 @@ const Vehicle = require("../models/Vehicle");
 const registerVehicle = require("../models/VehicleRegister");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
+const carStatusList = require("../configs/CarStatus");
 
 async function RegisterVehicle(req, res) {
   try {
@@ -44,10 +45,12 @@ async function DetailVehicle(req, res) {
       .populate("ownerId", "username location avatar")
       .lean();
     vehicle.servicefee = Math.round(vehicle.rentprice * 0.1);
-    vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days );
-    vehicle.basicinsurance = Math.round(vehicle.totalprice * 0.085)
-    vehicle.premiuminsurance = Math.round(vehicle.totalprice * 0.15)
-    vehicle.totalprice = Math.round(vehicle.totalprice + vehicle.basicinsurance)
+    vehicle.totalprice = Math.round(vehicle.rentprice * 1.1 * days);
+    vehicle.basicinsurance = Math.round(vehicle.totalprice * 0.085);
+    vehicle.premiuminsurance = Math.round(vehicle.totalprice * 0.15);
+    vehicle.totalprice = Math.round(
+      vehicle.totalprice + vehicle.basicinsurance
+    );
     vehicle.days = days;
     return res.status(200).json({ data: vehicle });
   } catch (error) {
@@ -55,4 +58,22 @@ async function DetailVehicle(req, res) {
     return res.status(400).json({ message: "Lỗi hệ thống" });
   }
 }
-module.exports = { RegisterVehicle, GetModels, DetailVehicle };
+async function DeleteVehicle(req, res) {
+  const vehicleId = req.params.id;
+  try {
+    const vehicle = await Vehicle.findOne({
+      _id: vehicleId,
+      ownerId: req.user.userId,
+    });
+    if (vehicle === null)
+      return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+    await vehicle.delete();
+    return res.status(200).json({ message: "Xóa xe thành công" });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(400)
+      .json({ message: "Lỗi hệ thống vui lòng thử lại sau" });
+  }
+}
+module.exports = { RegisterVehicle, GetModels, DetailVehicle, DeleteVehicle };

@@ -35,7 +35,7 @@ const UserSchema = new Schema(
     avatar: {
       type: String,
       default:
-        "https://scr.vn/wp-content/uploads/2020/07/Avatar-Facebook-tr%E1%BA%AFng.jpg",
+        "https://res.cloudinary.com/dmdtcm833/image/upload/v1669454227/avatar/default.jpg",
     },
     socialId: {
       type: String,
@@ -65,8 +65,8 @@ const UserSchema = new Schema(
       default: "",
     },
     banknumber: {
-      type: String,
-      default: "",
+      type: Number,
+      default: 0,
     },
     bankaccountname: {
       type: String,

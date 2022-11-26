@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoose_delete = require("mongoose-delete");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const carStatusList = require("../configs/CarStatus.js");
@@ -81,4 +82,9 @@ const VehicleSchema = new Schema(
   },
   { timestamps: true }
 );
+VehicleSchema.plugin(mongoose_delete, {
+  deletedAt: true,
+  overrideMethods: "all",
+  indexFields: ["deleted", "deletedAt"],
+});
 module.exports = mongoose.model("Vehicle", VehicleSchema);

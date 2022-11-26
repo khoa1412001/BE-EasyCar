@@ -4,6 +4,7 @@ const { uploadSingle, uploadArray } = require("../utils/Cloudinary");
 const statusList = require("../configs/StatusList");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const Vehicle = require("../models/Vehicle");
+const carStatusList = require("../configs/CarStatus");
 
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
@@ -26,7 +27,7 @@ async function UpdateAvatar(req, res) {
   try {
     //xu ly xoa hinh anh cu~
     const user = await User.findById(req.user.userId);
-    const result = await uploadSingle(req.files);
+    const result = await uploadSingle(req.file);
     user.avatar = result.url;
     await user.save();
     return res
@@ -77,7 +78,11 @@ async function GetRentalHistory(req, res) {
       .populate({
         path: "vehicleId",
         select: "brand model fueltype transmission seats modelimage",
-        populate: { path: "ownerId", select: "location" },
+        options: { withDeleted: true },
+        populate: {
+          path: "ownerId",
+          select: "location",
+        },
       })
       .lean();
     rentalHistory.map((vehicle) => {
@@ -108,10 +113,28 @@ async function GetOwnedVehicles(req, res) {
       .json({ message: "Đã xảy ra lỗi vui lòng thử lại sau!" });
   }
 }
+async function UpdateBankInfo(req, res) {
+  try {
+    const user = await User.findById(req.user.userId);
+    user.bank = req.body.bank;
+    user.bankaccountname = req.body.bankaccountname;
+    user.banknumber = Number(req.body.banknumber);
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Cập nhật thông tin tài khoản thành công" });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(400)
+      .json({ message: "Lỗi hệ thống vui lòng thử lại sau" });
+  }
+}
 module.exports = {
   UpdateUser,
   UpdateAvatar,
   VerifyUser,
   GetRentalHistory,
   GetOwnedVehicles,
+  UpdateBankInfo,
 };
