@@ -19,4 +19,6 @@ router.post(
 router.get("/rentalhistory", userController.GetRentalHistory);
 router.get("/ownedvehicle", userController.GetOwnedVehicles);
 router.post("/update-bank-info", userController.UpdateBankInfo);
+router.post("/add-contract", userController.AddHistoryRental);
+router.get("/withdraw-list", userController.GetWithdrawList);
 module.exports = router;

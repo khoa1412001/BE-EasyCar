@@ -5,7 +5,8 @@ const statusList = require("../configs/StatusList");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const Vehicle = require("../models/Vehicle");
 const carStatusList = require("../configs/CarStatus");
-
+const errorPayload = require("../payloads/errorPayload");
+const WithdrawRequest = require("../models/WithdrawRequest");
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
   try {
@@ -130,6 +131,47 @@ async function UpdateBankInfo(req, res) {
       .json({ message: "Lỗi hệ thống vui lòng thử lại sau" });
   }
 }
+async function AddHistoryRental(req, res) {
+  try {
+    const rentalDateEnd = new Date(Number(req.body.rentalDateEnd) * 1000);
+    const rentalDateStart = new Date(Number(req.body.rentalDateStart) * 1000);
+    const historyList = await VehicleRentalHistory.find({
+      vehicleId: req.body.vehicleId,
+      $or: [
+        { rentalDateEnd: { $gt: Date.now() } },
+        { rentalDateStart: { $gt: Date.now() } },
+      ],
+    }).lean();
+    const checkResult = historyList.every(
+      (item) =>
+        rentalDateEnd < item.rentalDateStart ||
+        rentalDateStart > item.rentalDateEnd
+    );
+
+    if (!checkResult)
+      return res.status(200).json({
+        message: "Lịch đăng ký xe đã bị trùng, vui lòng chọn lại ngày thuê xe",
+      });
+
+    const newRequest = new VehicleRentalHistory(req.body);
+    newRequest.rentalDateEnd = rentalDateEnd;
+    newRequest.rentalDateStart = rentalDateStart;
+    await newRequest.save();
+    return res.status(200).json({ message: "Đăng ký xe thành công" });
+  } catch (error) {
+    errorPayload(res, error);
+  }
+}
+async function GetWithdrawList(req, res) {
+  try {
+    const result = await WithdrawRequest.find({
+      userId: req.user.userId,
+    }).lean();
+    return res.status(200).json({ data: result });
+  } catch (error) {
+    errorPayload(res, error);
+  }
+}
 module.exports = {
   UpdateUser,
   UpdateAvatar,
@@ -137,4 +179,6 @@ module.exports = {
   GetRentalHistory,
   GetOwnedVehicles,
   UpdateBankInfo,
+  AddHistoryRental,
+  GetWithdrawList,
 };
