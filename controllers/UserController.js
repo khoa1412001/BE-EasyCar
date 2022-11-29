@@ -78,7 +78,7 @@ async function GetRentalHistory(req, res) {
     })
       .populate({
         path: "vehicleId",
-        select: "brand model fueltype transmission seats modelimage",
+        select: "brand model fueltype transmission seats modelimage rating",
         options: { withDeleted: true },
         populate: {
           path: "ownerId",
@@ -154,6 +154,7 @@ async function AddHistoryRental(req, res) {
       });
 
     const newRequest = new VehicleRentalHistory(req.body);
+    newRequest.userId = req.body.userId;
     newRequest.rentalDateEnd = rentalDateEnd;
     newRequest.rentalDateStart = rentalDateStart;
     await newRequest.save();
