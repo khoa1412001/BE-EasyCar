@@ -177,12 +177,14 @@ async function GetWithdrawList(req, res) {
 async function AddWithdrawRequest(req, res) {
   try {
     const amount = req.body.amount;
-    const user = await findById(req.user.userId, "balance").lean();
+    const user = await User.findById(req.user.userId, "balance").lean();
     if (user.balance < amount)
       return res
         .status(400)
         .json({ message: "Không đủ số dư để thực hiện yêu cầu rút tiền" });
-
+    const newBalance = user.balance - amount;
+    
+    await User.findByIdAndUpdate(req.user.userId,{balance: newBalance});
     const newRequest = new WithdrawRequest();
     newRequest.userId = req.user.userId;
     newRequest.amount = amount;
