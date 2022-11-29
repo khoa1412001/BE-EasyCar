@@ -155,7 +155,7 @@ async function AddHistoryRental(req, res) {
       });
 
     const newRequest = new VehicleRentalHistory(req.body);
-    newRequest.userId = req.body.userId;
+    newRequest.userId = req.user.userId;
     newRequest.rentalDateEnd = rentalDateEnd;
     newRequest.rentalDateStart = rentalDateStart;
     await newRequest.save();

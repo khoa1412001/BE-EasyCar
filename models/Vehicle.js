@@ -68,6 +68,7 @@ const VehicleSchema = new Schema(
     },
     numberOfTrip: {
       type: Number,
+      default: 0,
     },
     status: {
       type: Number,
