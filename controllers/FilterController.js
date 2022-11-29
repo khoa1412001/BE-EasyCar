@@ -1,3 +1,4 @@
+const carStatusList = require("../configs/CarStatus");
 const Vehicle = require("../models/Vehicle");
 
 async function GetVehicleWithFilter(req, res) {
@@ -8,7 +9,7 @@ async function GetVehicleWithFilter(req, res) {
   const oneDay = 1000 * 60 * 60 * 24;
   const diffInTime = endDate.getTime() - startDate.getTime();
   const days = Math.ceil(diffInTime / oneDay);
-  var filter = {};
+  var filter = { status: carStatusList.ALLOW };
   if (req.body.cartype.length !== 1) {
     filter.type = req.body.cartype;
     filter.type.shift();

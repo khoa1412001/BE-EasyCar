@@ -7,6 +7,7 @@ const Vehicle = require("../models/Vehicle");
 const carStatusList = require("../configs/CarStatus");
 const errorPayload = require("../payloads/errorPayload");
 const WithdrawRequest = require("../models/WithdrawRequest");
+const { findById } = require("../models/User");
 async function UpdateUser(req, res) {
   const { location, username, phonenumber, gender } = req.body;
   try {
@@ -172,6 +173,25 @@ async function GetWithdrawList(req, res) {
     errorPayload(res, error);
   }
 }
+async function AddWithdrawRequest(req, res) {
+  try {
+    const amount = req.body.amount;
+    const user = await findById(req.user.userId, "balance").lean();
+    if (user.balance < amount)
+      return res
+        .status(400)
+        .json({ message: "Không đủ số dư để thực hiện yêu cầu rút tiền" });
+
+    const newRequest = new WithdrawRequest();
+    newRequest.userId = req.user.userId;
+    newRequest.amount = amount;
+    await newRequest.save();
+    return res.status(200).json({ message: "Tạo yêu cầu rút tiền thành công" });
+  } catch (error) {
+    errorPayload(res, error);
+  }
+}
+async function GetRentalHistoryOfOwnedVehicle(req, res) {}
 module.exports = {
   UpdateUser,
   UpdateAvatar,
@@ -181,4 +201,5 @@ module.exports = {
   UpdateBankInfo,
   AddHistoryRental,
   GetWithdrawList,
+  AddWithdrawRequest,
 };

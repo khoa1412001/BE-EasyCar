@@ -4,6 +4,7 @@ const registerVehicle = require("../models/VehicleRegister");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 const carStatusList = require("../configs/CarStatus");
+const errorPayload = require("../payloads/errorPayload");
 
 async function RegisterVehicle(req, res) {
   try {
@@ -70,10 +71,21 @@ async function DeleteVehicle(req, res) {
     await vehicle.delete();
     return res.status(200).json({ message: "Xóa xe thành công" });
   } catch (error) {
-    console.log(error.message);
-    return res
-      .status(400)
-      .json({ message: "Lỗi hệ thống vui lòng thử lại sau" });
+    errorPayload(req, error);
+  }
+}
+async function PostponeVehicle(req, res) {
+  try {
+    const vehicleId = req.params.vehicle;
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (vehicle.ownerId.toString() !== req.user.userId) {
+      throw new Error("Lỗi hệ thống");
+    }
+    vehicle.status = carStatusList.POSTPONE;
+    await vehicle.save();
+    return res.status(200).json({ message: "Tạm dừng xe thành công" });
+  } catch (error) {
+    errorPayload(req, error);
   }
 }
 module.exports = { RegisterVehicle, GetModels, DetailVehicle, DeleteVehicle };
