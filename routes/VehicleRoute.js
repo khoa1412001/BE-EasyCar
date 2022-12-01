@@ -11,4 +11,5 @@ router.post(
 router.get("/models", vehicleController.GetModels);
 router.get("/:id", vehicleController.DetailVehicle);
 router.delete("/:id", passport, vehicleController.DeleteVehicle);
+router.post("/:vehicle", passport, vehicleController.PostponeVehicle);
 module.exports = router;

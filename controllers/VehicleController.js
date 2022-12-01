@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const Vehicle = require("../models/Vehicle");
-const registerVehicle = require("../models/VehicleRegister");
+const VehicleRegister = require("../models/VehicleRegister");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 const carStatusList = require("../configs/CarStatus");
@@ -15,8 +15,13 @@ async function RegisterVehicle(req, res) {
     //   user.save();
     // }
     //kiem tra bien so xe sau
+    const checkPlate = await VehicleRegister.countDocuments({
+      licenseplate: req.body.licenseplate,
+    });
+    if (!checkPlate)
+      return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
     const vehicle = await uploadArray(req.files);
-    const newVehicle = new registerVehicle(req.body);
+    const newVehicle = new VehicleRegister(req.body);
     newVehicle.vehicleimage = vehicle.map((item) => item.url);
     newVehicle.seats = newVehicle.type.split("-").pop();
     newVehicle.userId = req.user.userId;
@@ -85,4 +90,10 @@ async function PostponeVehicle(req, res) {
     errorPayload(req, error);
   }
 }
-module.exports = { RegisterVehicle, GetModels, DetailVehicle, DeleteVehicle };
+module.exports = {
+  RegisterVehicle,
+  GetModels,
+  DetailVehicle,
+  DeleteVehicle,
+  PostponeVehicle,
+};
