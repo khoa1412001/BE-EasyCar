@@ -15,7 +15,7 @@ const VehicleRentalHistorySchema = new Schema({
   },
   rentalStatusId: {
     type: ObjectId,
-    ref: "CarRentalStatus",
+    ref: "VehicleRentalStatus",
   },
   rentalDateStart: {
     type: Date,
@@ -31,7 +31,7 @@ const VehicleRentalHistorySchema = new Schema({
     type: Number,
   },
   insurancetype: {
-    type: Number
+    type: Number,
   },
   servicefee: {
     type: Number,

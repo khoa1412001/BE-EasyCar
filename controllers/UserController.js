@@ -183,8 +183,8 @@ async function AddWithdrawRequest(req, res) {
         .status(400)
         .json({ message: "Không đủ số dư để thực hiện yêu cầu rút tiền" });
     const newBalance = user.balance - amount;
-    
-    await User.findByIdAndUpdate(req.user.userId,{balance: newBalance});
+
+    await User.findByIdAndUpdate(req.user.userId, { balance: newBalance });
     const newRequest = new WithdrawRequest();
     newRequest.userId = req.user.userId;
     newRequest.amount = amount;
@@ -194,7 +194,21 @@ async function AddWithdrawRequest(req, res) {
     errorPayload(res, error);
   }
 }
-async function GetRentalHistoryOfOwnedVehicle(req, res) {}
+async function GetDetailRentalHistoryOfOwnedVehicle(req, res) {
+  try {
+    const vehicleId = req.params.id;
+    const result = await VehicleRentalHistory.find(
+      { vehicleId: vehicleId },
+      "rentalDateStart rentalDateEnd"
+    )
+      .populate("userId", "username")
+      .lean();
+    // result.map(item => remove item)
+    return res.status(200).json({ data: result });
+  } catch (error) {
+    errorPayload(res, error);
+  }
+}
 module.exports = {
   UpdateUser,
   UpdateAvatar,
@@ -205,4 +219,5 @@ module.exports = {
   AddHistoryRental,
   GetWithdrawList,
   AddWithdrawRequest,
+  GetDetailRentalHistoryOfOwnedVehicle,
 };

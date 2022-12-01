@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Vehicle = require("../models/Vehicle");
 const VehicleRegister = require("../models/VehicleRegister");
+const VehicleStatus = require("../models/VehicleStatus");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 const carStatusList = require("../configs/CarStatus");
@@ -14,7 +15,6 @@ async function RegisterVehicle(req, res) {
     //   user.carowner = true;
     //   user.save();
     // }
-    //kiem tra bien so xe sau
     const checkPlate = await VehicleRegister.countDocuments({
       licenseplate: req.body.licenseplate,
     });
@@ -90,10 +90,23 @@ async function PostponeVehicle(req, res) {
     errorPayload(req, error);
   }
 }
+async function GetVehicleStatus(req, res) {
+  const vehicleId = req.params.id;
+  try {
+    const result = await VehicleStatus.find(
+      { vehicleId: vehicleId },
+      "updatedAt"
+    ).lean();
+    return res.status(200).json({ data: result });
+  } catch (error) {
+    errorPayload(res, error);
+  }
+}
 module.exports = {
   RegisterVehicle,
   GetModels,
   DetailVehicle,
   DeleteVehicle,
   PostponeVehicle,
+  GetVehicleStatus,
 };

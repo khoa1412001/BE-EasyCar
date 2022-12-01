@@ -16,10 +16,14 @@ router.post(
   parser.single("driverlincenseimg"),
   userController.VerifyUser
 );
-router.get("/rentalhistory", userController.GetRentalHistory);
-router.get("/ownedvehicle", userController.GetOwnedVehicles);
+router.get("/rental-history", userController.GetRentalHistory);
+router.get("/owned-vehicle", userController.GetOwnedVehicles);
 router.post("/update-bank-info", userController.UpdateBankInfo);
 router.post("/add-contract", userController.AddHistoryRental);
 router.get("/withdraw-list", userController.GetWithdrawList);
 router.post("/withdraw", userController.AddWithdrawRequest);
+router.get(
+  "/vehicle-rental-list/:id",
+  userController.GetDetailRentalHistoryOfOwnedVehicle
+);
 module.exports = router;
