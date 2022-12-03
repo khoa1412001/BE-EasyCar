@@ -9,8 +9,8 @@ router.post(
   vehicleController.RegisterVehicle
 );
 router.get("/models", vehicleController.GetModels);
-router.get("/:id", vehicleController.DetailVehicle);
-router.delete("/:id", passport, vehicleController.DeleteVehicle);
-router.post("/:vehicle", passport, vehicleController.PostponeVehicle);
+router.get("/detail/:id", vehicleController.DetailVehicle);
+router.delete("/delete/:id", passport, vehicleController.DeleteVehicle);
+router.post("/postpone/:id", passport, vehicleController.PostponeVehicle);
 router.get("/status/:id", passport, vehicleController.GetVehicleStatus);
 module.exports = router;

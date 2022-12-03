@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const Vehicle = require("../models/Vehicle");
 const VehicleRegister = require("../models/VehicleRegister");
 const VehicleStatus = require("../models/VehicleStatus");
@@ -78,7 +77,7 @@ async function DeleteVehicle(req, res) {
 }
 async function PostponeVehicle(req, res) {
   try {
-    const vehicleId = req.params.vehicle;
+    const vehicleId = req.params.id;
     const vehicle = await Vehicle.findById(vehicleId);
     if (vehicle.ownerId.toString() !== req.user.userId) {
       throw new Error("Lỗi hệ thống");
@@ -89,6 +88,16 @@ async function PostponeVehicle(req, res) {
   } catch (error) {
     errorPayload(req, error);
   }
+}
+async function ResumeVehicle(req, res) {
+  const vehicleId = req.params.id;
+  try {
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (vehicle.ownerId.toString() !== req.user.userId) {
+      throw new Error("Lỗi hệ thống");
+    }
+    vehicle.status = carStatusList.ALLOW;
+  } catch (error) {}
 }
 async function GetVehicleStatus(req, res) {
   const vehicleId = req.params.id;
