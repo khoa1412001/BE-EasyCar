@@ -5,7 +5,7 @@ const filterRoute = require("./FilterRoute");
 const vehicleRoute = require("./VehicleRoute");
 const adminRoute = require("./AdminRoute");
 const ownedVehicleRoute = require("./OwnedVehicleRoute");
-const PaymentRoute = require("./PaymentRoute");
+const paymentRoute = require("./PaymentRoute");
 const RentalVehicleRoute = require("./RentalVehicleRoute");
 
 const testRoute = require("./TestRoute");
@@ -26,7 +26,8 @@ function route(app) {
     verifyRoles(role.ADMIN, role.STAFF),
     adminRoute
   );
-  app.use("/api/owned-vehicle", passport, ownedVehicleRoute);
+  app.use("/api/my-vehicle", passport, ownedVehicleRoute);
+  app.use("/api/payment", passport, paymentRoute);
   app.use("/api/test", testRoute);
 }
 

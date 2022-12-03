@@ -1,17 +1,38 @@
-async function GetOwnedVehicles(req, res) {
-  try {
-    const ownedVehicle = await Vehicle.find(
-      { ownerId: req.user.userId },
-      "brand model fueltype transmission seats rating modelimage rentprice"
-    )
-      .populate("ownerId", "location")
-      .lean();
-    return res.status(200).json({ data: ownedVehicle });
-  } catch (error) {
-    console.log(error.message);
-    return res
-      .status(400)
-      .json({ message: "Đã xảy ra lỗi vui lòng thử lại sau!" });
-  }
-}
-module.exports = { GetOwnedVehicles };
+const {
+  ErrorPayload,
+  SuccessDataPayload,
+  SuccessMsgPayload,
+  ErrorMsgPayload,
+} = require("../payloads");
+
+const OwnedVehicleController = {
+  GetOwnedVehicles: async (req, res) => {
+    try {
+      const ownedVehicle = await Vehicle.find(
+        { ownerId: req.user.userId },
+        "brand model fueltype transmission seats rating modelimage rentprice"
+      )
+        .populate("ownerId", "location")
+        .lean();
+      SuccessDataPayload(res, ownedVehicle);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetDetailVehicle: async (req, res) => {
+    try {
+      const vehicleId = req.params.id;
+      const result = await VehicleRentalHistory.find(
+        { vehicleId: vehicleId },
+        "rentalDateStart rentalDateEnd"
+      )
+        .populate("userId", "username")
+        .lean();
+      result.map((item) => delete item.userId._id);
+      SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+};
+module.exports = OwnedVehicleController;

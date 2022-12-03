@@ -68,25 +68,7 @@ router.post("/register", authController.Register);
  *
  */
 router.post("/login", authController.Login);
-/**
- * @swagger
- * /api/auth/:
- *    get:
- *     tags:
- *      - Auth
- *     summary: getUserData
- *     produces:
- *       - application/json
- *     responses:
- *      '200':
- *        description: OK
- */
-router.get(
-  "/",
-  passport,
-  //verifyRoles(role.STAFF, role.ADMIN, role.CUSTOMER),
-  authController.getUserData
-);
+
 // router.get('/refresh', authController.refreshToken)
 
 router.post("/check-email", authController.checkEmail); //Kiem tra email

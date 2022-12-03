@@ -9,6 +9,7 @@ var mongoose = require("mongoose"),
   { OAuth2Client } = require("google-auth-library"),
   axios = require("axios");
 dotenv.config();
+const CLIENT_URL = process.env.CLIENT_URL;
 const googleClient = new OAuth2Client({
   clientId: `${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
 });
@@ -22,7 +23,7 @@ async function Register(req, res) {
     const token = jwtService.generateMailToken(newUser.email);
     var context =
       "Bấm vào đường link bên dưới để xác thực tài khoản\n" +
-      `http://localhost:3000/validate?token=${token}`;
+      `${CLIENT_URL}/validate?token=${token}`;
     sendMail(newUser.email, subject, context);
     return res.status(201).json({
       message: "Tạo tài khoản thành công, kiểm tra mail để xác thực tài khoản",
@@ -57,25 +58,6 @@ async function Login(req, res) {
       message: "Lỗi máy chủ, vui lòng thử lại sau.",
     });
   }
-}
-function getUserData(req, res) {
-  User.findById(req.user.userId, (err, user) => {
-    if (err)
-      return res.status(401).json({ message: "Không tìm thấy người dùng" });
-    res.status(200).json({
-      username: user.username,
-      email: user.email,
-      avatar: user.avatar,
-      phoneNumber: user.phoneNumber,
-      location: user.location,
-      gender: user.gender,
-      balance: user.balance,
-      verification: user.verification,
-      bank: user.bank,
-      bankaccountname: user.bankaccountname,
-      banknumber: user.banknumber,
-    });
-  });
 }
 function checkEmail(req, res) {
   User.countDocuments({ email: req.body.email }, (err, count) => {
@@ -163,7 +145,6 @@ async function validateMail(req, res) {
 module.exports = {
   Login,
   Register,
-  getUserData,
   checkEmail,
   changePassword,
   sendValidateMail,
