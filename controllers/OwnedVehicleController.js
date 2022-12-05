@@ -4,13 +4,14 @@ const {
   SuccessMsgPayload,
   ErrorMsgPayload,
 } = require("../payloads");
-
+const Vehicle = require("../models/Vehicle");
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const OwnedVehicleController = {
   GetOwnedVehicles: async (req, res) => {
     try {
       const ownedVehicle = await Vehicle.find(
         { ownerId: req.user.userId },
-        "brand model fueltype transmission seats rating modelimage rentprice"
+        "brand model fueltype transmission seats rating modelimage rentprice status"
       )
         .populate("ownerId", "location")
         .lean();
@@ -24,7 +25,7 @@ const OwnedVehicleController = {
       const vehicleId = req.params.id;
       const result = await VehicleRentalHistory.find(
         { vehicleId: vehicleId },
-        "rentalDateStart rentalDateEnd"
+        "rentalDateStart rentalDateEnd totalPrice"
       )
         .populate("userId", "username")
         .lean();

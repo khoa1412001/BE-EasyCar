@@ -5,6 +5,9 @@ const {
   ErrorMsgPayload,
 } = require("../payloads");
 const User = require("../models/User");
+const WithdrawRequest = require("../models/WithdrawRequest");
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+
 const PaymentController = {
   AddWithdrawRequest: async (req, res) => {
     try {
@@ -24,6 +27,7 @@ const PaymentController = {
       ErrorPayload(res, error);
     }
   },
+
   GetWithdrawList: async (req, res) => {
     try {
       const result = await WithdrawRequest.find({
