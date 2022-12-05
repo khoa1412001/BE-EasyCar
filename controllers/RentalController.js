@@ -1,3 +1,5 @@
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+
 const RentalController = {
   AddHistoryRental: async (req, res) => {
     try {
