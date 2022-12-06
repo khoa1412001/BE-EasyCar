@@ -1,7 +1,6 @@
 var mongoose = require("mongoose"),
-  bcrypt = require("bcrypt"),
   Schema = mongoose.Schema,
-  role = require("../configs/roleList");
+  role = require("../configs/RoleList");
 const UserSchema = new Schema(
   {
     username: {
@@ -10,11 +9,9 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
     },
     phoneNumber: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -38,17 +35,12 @@ const UserSchema = new Schema(
     avatar: {
       type: String,
       default:
-        "https://scr.vn/wp-content/uploads/2020/07/Avatar-Facebook-tr%E1%BA%AFng.jpg",
+        "https://res.cloudinary.com/dmdtcm833/image/upload/v1669454227/avatar/default.jpg",
     },
     socialId: {
       type: String,
-      required: true,
     },
     verification: {
-      type: Boolean,
-      default: false,
-    },
-    carowner: {
       type: Boolean,
       default: false,
     },
@@ -62,8 +54,24 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
-      default:"MALE",
-    }
+      default: "MALE",
+    },
+    isgoogleaccount: {
+      type: Boolean,
+      default: false,
+    },
+    bank: {
+      type: String,
+      default: "",
+    },
+    banknumber: {
+      type: Number,
+      default: 0,
+    },
+    bankaccountname: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

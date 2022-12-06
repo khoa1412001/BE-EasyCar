@@ -1,4 +1,6 @@
-const router = require("express").Router()
-const filterController = require("../controllers/FilterController")
+const router = require("express").Router();
+const filterController = require("../controllers/FilterController");
 
-module.exports = router
+router.post("/", filterController.GetVehicleWithFilter);
+
+module.exports = router;

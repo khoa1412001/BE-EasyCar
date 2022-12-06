@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
-const statusList = require("../configs/statusList");
+const statusList = require("../configs/StatusList");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const UserVerificationRequestSchema = new Schema(
   {
-    _id: {
+    userId: {
       type: ObjectId,
+      ref: "User",
+      required: true,
     },
     username: {
       type: String,

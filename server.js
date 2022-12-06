@@ -6,7 +6,15 @@ const express = require("express"),
   swaggerUi = require("swagger-ui-express"),
   cors = require("cors"),
   swaggerJsdoc = require("./configs/swaggerConfig"),
-  morgan = require("morgan");
+  morgan = require("morgan"),
+  {
+    loadVehicleBrandData,
+    loadVehicleModelData,
+  } = require("./models/VehicleModel");
+
+loadVehicleBrandData();
+loadVehicleModelData();
+
 const route = require("./routes");
 
 let PORT = process.env.PORT || 5000;
@@ -14,9 +22,9 @@ let mongodb = process.env.MONGODB_URL;
 
 dotenv.config();
 const app = express();
-app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(cors({ credentials: true, origin: true }));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 app.use(morgan("dev"));
 mongoose
