@@ -57,6 +57,8 @@ const OwnedVehicleController = {
         throw new Error("Lỗi hệ thống");
       }
       vehicle.status = carStatusList.ALLOW;
+      await vehicle.save();
+      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       ErrorPayload(res, error);
     }
