@@ -5,12 +5,9 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   swaggerUi = require("swagger-ui-express"),
   cors = require("cors"),
-  swaggerJsdoc = require("./configs/swaggerConfig"),
+  swaggerJsdoc = require("./configs/SwaggerConfig"),
   morgan = require("morgan"),
-  {
-    loadVehicleBrandData,
-    loadVehicleModelData,
-  } = require("./models/VehicleModel");
+  { loadVehicleBrandData, loadVehicleModelData } = require("./models/VehicleModel");
 
 loadVehicleBrandData();
 loadVehicleModelData();
