@@ -157,7 +157,7 @@ const PaymentController = {
               const vehicle = await Vehicle.findById(vehiclehistory.vehicleId);
               const user = await User.findById(vehicle.ownerId)
               const balance = user.balance + vehiclehistory.totalPrice;
-              // await User.findOneAndUpdate({username:username},{balance:balance})
+              await User.findOneAndUpdate({_id:user._id},{balance:balance})
           }
           return res.status(204).json({});
       }
