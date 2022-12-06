@@ -22,7 +22,7 @@ function route(app) {
   app.use("/api/filter", filterRoute);
   app.use("/api/admin", passport, verifyRoles(role.ADMIN, role.STAFF), adminRoute);
   app.use("/api/my-vehicle", passport, ownedVehicleRoute);
-  app.use("/api/payment", passport, paymentRoute);
+  app.use("/api/payment", paymentRoute);
   app.use("/api/history", passport, rentalVehicleRoute);
   app.use("/api/test", testRoute);
 }
