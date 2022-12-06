@@ -6,6 +6,7 @@ const {
 } = require("../payloads");
 const Vehicle = require("../models/Vehicle");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const carStatusList = require("../configs/CarStatus.js");
 const OwnedVehicleController = {
   GetOwnedVehicles: async (req, res) => {
     try {
@@ -31,7 +32,7 @@ const OwnedVehicleController = {
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
-      ErrorPayload(req, error);
+      ErrorPayload(res, error);
     }
   },
   PostponeVehicle: async (req, res) => {
@@ -45,7 +46,7 @@ const OwnedVehicleController = {
       await vehicle.save();
       return res.status(200).json({ message: "Tạm dừng xe thành công" });
     } catch (error) {
-      ErrorPayload(req, error);
+      ErrorPayload(res, error);
     }
   },
   ResumeVehicle: async (req, res) => {
@@ -57,7 +58,7 @@ const OwnedVehicleController = {
       }
       vehicle.status = carStatusList.ALLOW;
     } catch (error) {
-      ErrorPayload(req, error);
+      ErrorPayload(res, error);
     }
   },
   GetVehicleStatus: async (req, res) => {
@@ -66,7 +67,7 @@ const OwnedVehicleController = {
       const result = await VehicleStatus.find({ vehicleId: vehicleId }, "updatedAt").lean();
       return res.status(200).json({ data: result });
     } catch (error) {
-      ErrorPayload(req, error);
+      ErrorPayload(res, error);
     }
   },
   GetHistoryRental: async (req, res) => {
