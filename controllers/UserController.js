@@ -4,7 +4,12 @@ const { uploadSingle, uploadArray } = require("../utils/Cloudinary");
 const statusList = require("../configs/StatusList");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 
-const errorPayload = require("../payloads/errorPayload");
+const {
+  ErrorPayload,
+  ErrorMsgPayload,
+  SuccessDataPayload,
+  SuccessMsgPayload,
+} = require("../payloads");
 const UserController = {
   UpdateUserInfo: async (req, res) => {
     const { location, username, phonenumber, gender } = req.body;
@@ -87,7 +92,7 @@ const UserController = {
       ).lean();
       return res.status(200).json({ data: user });
     } catch (error) {
-      errorPayload(res, error);
+      ErrorPayload(res, error);
     }
   },
 };

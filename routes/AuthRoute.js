@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const role = require("../configs/roleList");
+const role = require("../configs/RoleList");
 const authController = require("../controllers/AuthController");
 const passport = require("../middlewares/VerifyJWT"),
   verifyRoles = require("../middlewares/VerifyRoles");
