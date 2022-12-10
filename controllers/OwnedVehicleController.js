@@ -6,8 +6,8 @@ const {
 } = require("../payloads");
 const Vehicle = require("../models/Vehicle");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const VehicleStatus = require("../models/VehicleStatus");
 const carStatusList = require("../configs/CarStatus.js");
-const VehicleStatus = require("../models/VehicleStatus")
 const OwnedVehicleController = {
   GetOwnedVehicles: async (req, res) => {
     try {
@@ -91,16 +91,31 @@ const OwnedVehicleController = {
     try {
       const rentalId = req.params.id;
       const result = await VehicleRentalHistory.findById(rentalId)
-        .populate({ path: "userId", select: "-_id username avatar phoneNumber location" })
-        .populate("vehicleId")
+        .populate({ path: "userId", select: "-_id avatar phoneNumber avatar" })
         .lean();
-      let startDate = new Date(result.rentalDateStart);
-      let endDate = new Date(result.rentalDateEnd);
-      const oneDay = 1000 * 60 * 60 * 24;
-      let diffInTime = endDate.getTime() - startDate.getTime();
-      let days = Math.ceil(diffInTime / oneDay);
-      result.days = days
       SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetDetailStatus: async (req, res) => {
+    const rentalStatusId = req.params.id;
+    try {
+      const result = await VehicleStatus.findById(rentalStatusId)
+        .populate({
+          path: "vehicleId",
+          select: "brand model year licenseplate",
+        })
+        .lean();
+      SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  UpdateVehicleStatus: async (req, res) => {
+    const rentalStatusId = req.params.id;
+    try {
+      new Promise();
     } catch (error) {
       ErrorPayload(res, error);
     }
