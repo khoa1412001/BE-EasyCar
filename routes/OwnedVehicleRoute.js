@@ -11,7 +11,7 @@ router.post("/resume/:id", ownedVehicleController.ResumeVehicle);
 router.get("/detail/:id", ownedVehicleController.GetDetailRental);
 router.get("/detail-status/:id", ownedVehicleController.GetDetailStatus);
 router.post(
-  "/update-status/:id",
+  "/update-status",
   parser.fields([{ name: "statusimage" }, { name: "statusvideo" }]),
   ownedVehicleController.UpdateVehicleStatus
 );

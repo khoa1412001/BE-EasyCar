@@ -30,8 +30,7 @@ const OwnedVehicleController = {
         _id: vehicleId,
         ownerId: req.user.userId,
       });
-      if (vehicle === null)
-        return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
@@ -61,9 +60,7 @@ const OwnedVehicleController = {
       }
       vehicle.status = carStatusList.ALLOW;
       await vehicle.save();
-      return res
-        .status(200)
-        .json({ message: "Tiếp tục cho thuê xe thành công" });
+      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       ErrorPayload(res, error);
     }
@@ -71,10 +68,7 @@ const OwnedVehicleController = {
   GetVehicleStatus: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const result = await VehicleStatus.find(
-        { vehicleId: vehicleId },
-        "updatedAt"
-      ).lean();
+      const result = await VehicleStatus.find({ vehicleId: vehicleId }, "updatedAt").lean();
       return res.status(200).json({ data: result });
     } catch (error) {
       ErrorPayload(res, error);
@@ -120,13 +114,15 @@ const OwnedVehicleController = {
     }
   },
   UpdateVehicleStatus: async (req, res) => {
-    const rentalStatusId = req.params.id;
     try {
-      const rental = await VehicleStatus.findById(rentalStatusId);
-      const uploadResult = await uploadArray([
-        ...req.files.statusimage,
-        ...req.files.statusvideo,
-      ]);
+      const { id, engstatus, extstatus, intstatus } = req.body;
+      const rental = new VehicleStatus();
+      rental.statusimage = [];
+      rental.vehicleId = id;
+      rental.engstatus = engstatus;
+      rental.extstatus = extstatus;
+      rental.intstatus = intstatus;
+      const uploadResult = await uploadArray([...req.files.statusimage, ...req.files.statusvideo]);
       uploadResult.map((item) => {
         if (item.folder === "statusimage") rental.statusimage.push(item.url);
         else rental.statusvideo = item.url;

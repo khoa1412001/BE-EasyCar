@@ -1,4 +1,6 @@
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const VehicleRentalStatus = require("../models/VehicleRentalStatus");
+const { uploadArray } = require("../utils/Cloudinary");
 const {
   ErrorMsgPayload,
   ErrorPayload,
@@ -74,8 +76,31 @@ const RentalController = {
       const oneDay = 1000 * 60 * 60 * 24;
       let diffInTime = endDate.getTime() - startDate.getTime();
       let days = Math.ceil(diffInTime / oneDay);
-      result.days = days
+      result.days = days;
       SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  UpdateVehicleStatus: async (req, res) => {
+    try {
+      const { id, engstatus, extstatus, intstatus } = req.body;
+      const rental = new VehicleRentalStatus();
+      rental.statusimage = [];
+      rental.engstatus = engstatus;
+      rental.extstatus = extstatus;
+      rental.intstatus = intstatus;
+      const uploadResult = await uploadArray([...req.files.statusimage, ...req.files.statusvideo]);
+      uploadResult.map((item) => {
+        if (item.folder === "statusimage") rental.statusimage.push(item.url);
+        else rental.statusvideo = item.url;
+      });
+      const result = await rental.save();
+      await VehicleRentalHistory.findByIdAndUpdate(id, {
+        rentalStatusId: result._id,
+        carstatusupdate: true,
+      });
+      SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
     } catch (error) {
       ErrorPayload(res, error);
     }
