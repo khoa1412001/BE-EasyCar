@@ -7,4 +7,5 @@ router.get("/status/:id", ownedVehicleController.GetVehicleStatus);
 router.delete("/delete/:id", ownedVehicleController.DeleteVehicle);
 router.post("/postpone/:id", ownedVehicleController.PostponeVehicle);
 router.post("/resume/:id", ownedVehicleController.ResumeVehicle);
+router.get("/detail/:id", ownedVehicleController.GetDetailRental);
 module.exports = router;

@@ -1,4 +1,10 @@
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const {
+  ErrorMsgPayload,
+  ErrorPayload,
+  SuccessDataPayload,
+  SuccessMsgPayload,
+} = require("../payloads");
 
 const RentalController = {
   AddHistoryRental: async (req, res) => {
@@ -51,6 +57,21 @@ const RentalController = {
     } catch (error) {
       console.log(error.message);
       return res.status(400).json({ message: "Không thể lấy được lịch sử thuê xe" });
+    }
+  },
+  GetDetailRental: async (req, res) => {
+    try {
+      const rentalId = req.params.id;
+      const result = await VehicleRentalHistory.findById(rentalId)
+        .select("-userId")
+        .populate({
+          path: "vehicleId",
+          populate: { path: "ownerId", select: "-_id location avatar phoneNumber username" },
+        })
+        .lean();
+      SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
     }
   },
 };

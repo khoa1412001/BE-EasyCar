@@ -86,5 +86,16 @@ const OwnedVehicleController = {
       ErrorPayload(res, error);
     }
   },
+  GetDetailRental: async (req, res) => {
+    try {
+      const rentalId = req.params.id;
+      const result = await VehicleRentalHistory.findById(rentalId)
+        .populate({ path: "userId", select: "-_id avatar phoneNumber avatar" })
+        .lean();
+      SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
 };
 module.exports = OwnedVehicleController;

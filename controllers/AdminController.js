@@ -4,6 +4,7 @@ const Vehicle = require("../models/Vehicle");
 const RegisterVehicle = require("../models/VehicleRegister");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
 const VehicleRegister = require("../models/VehicleRegister");
+const statusList = require("../configs/StatusList");
 const AdminController = {
   GetUserList: async (req, res) => {
     const perPage = 3;
@@ -95,6 +96,31 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
-  GetWithdrawList: async (req, res) => {},
+  GetWithdrawList: async (req, res) => {
+    const perPage = 3;
+    const page = req.query.page || 1;
+    var totalPage = 0;
+    try {
+      if (page === 1) {
+        let totalRequest = await PaymentRequest.countDocuments({ status: statusList.PENDING });
+        totalPage = Math.ceil(totalRequest / perPage);
+      }
+      const data = await PaymentRequest.find({ status: statusList.PENDING })
+        .populate(
+          "userId",
+          "avatar email username bank banknumber bankaccountname phoneNumber location"
+        )
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean();
+      return res.status(200).json({
+        totalPage: totalPage,
+        data: data,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(400).json({ message: "Lỗi hệ thống" });
+    }
+  },
 };
 module.exports = AdminController;
