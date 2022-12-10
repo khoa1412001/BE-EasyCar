@@ -7,6 +7,7 @@ const {
 const Vehicle = require("../models/Vehicle");
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const carStatusList = require("../configs/CarStatus.js");
+const VehicleStatus = require("../models/VehicleStatus")
 const OwnedVehicleController = {
   GetOwnedVehicles: async (req, res) => {
     try {
@@ -90,8 +91,15 @@ const OwnedVehicleController = {
     try {
       const rentalId = req.params.id;
       const result = await VehicleRentalHistory.findById(rentalId)
-        .populate({ path: "userId", select: "-_id avatar phoneNumber avatar" })
+        .populate({ path: "userId", select: "-_id username avatar phoneNumber location" })
+        .populate("vehicleId")
         .lean();
+      let startDate = new Date(result.rentalDateStart);
+      let endDate = new Date(result.rentalDateEnd);
+      const oneDay = 1000 * 60 * 60 * 24;
+      let diffInTime = endDate.getTime() - startDate.getTime();
+      let days = Math.ceil(diffInTime / oneDay);
+      result.days = days
       SuccessDataPayload(res, result);
     } catch (error) {
       ErrorPayload(res, error);

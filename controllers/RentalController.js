@@ -69,6 +69,12 @@ const RentalController = {
           populate: { path: "ownerId", select: "-_id location avatar phoneNumber username" },
         })
         .lean();
+      let startDate = new Date(result.rentalDateStart);
+      let endDate = new Date(result.rentalDateEnd);
+      const oneDay = 1000 * 60 * 60 * 24;
+      let diffInTime = endDate.getTime() - startDate.getTime();
+      let days = Math.ceil(diffInTime / oneDay);
+      result.days = days
       SuccessDataPayload(res, result);
     } catch (error) {
       ErrorPayload(res, error);
