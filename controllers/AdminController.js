@@ -5,6 +5,7 @@ const RegisterVehicle = require("../models/VehicleRegister");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
 const VehicleRegister = require("../models/VehicleRegister");
 const statusList = require("../configs/StatusList");
+const { ErrorMsgPayload } = require("../payloads");
 const AdminController = {
   GetUserList: async (req, res) => {
     const perPage = 3;
