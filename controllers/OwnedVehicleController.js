@@ -92,7 +92,7 @@ const OwnedVehicleController = {
     try {
       const rentalId = req.params.id;
       const result = await VehicleRentalHistory.findById(rentalId)
-        .populate({ path: "userId", select: "-_id avatar phoneNumber avatar" })
+        .populate({ path: "userId", select: "-_id avatar phoneNumber username" })
         .populate("vehicleId")
         .lean();
       let startDate = new Date(result.rentalDateStart);
