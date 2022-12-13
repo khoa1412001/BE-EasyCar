@@ -40,12 +40,13 @@ const OwnedVehicleController = {
   PostponeVehicle: async (req, res) => {
     try {
       const vehicleId = req.params.id;
-      const vehicle = await Vehicle.findById(vehicleId);
-      if (vehicle.ownerId.toString() !== req.user.userId) {
-        throw new Error("Lỗi hệ thống");
-      }
-      vehicle.status = carStatusList.POSTPONE;
-      await vehicle.save();
+      await Vehicle.findOneAndUpdate(
+        {
+          _id: vehicleId,
+          ownerId: req.user.userId,
+        },
+        { status: carStatusList.POSTPONE }
+      );
       return res.status(200).json({ message: "Tạm dừng xe thành công" });
     } catch (error) {
       ErrorPayload(res, error);
@@ -54,12 +55,13 @@ const OwnedVehicleController = {
   ResumeVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const vehicle = await Vehicle.findById(vehicleId);
-      if (vehicle.ownerId.toString() !== req.user.userId) {
-        throw new Error("Lỗi hệ thống");
-      }
-      vehicle.status = carStatusList.ALLOW;
-      await vehicle.save();
+      await Vehicle.findOneAndUpdate(
+        {
+          _id: vehicleId,
+          ownerId: req.user.userId,
+        },
+        { status: carStatusList.ALLOW }
+      );
       return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       ErrorPayload(res, error);
@@ -100,7 +102,7 @@ const OwnedVehicleController = {
       const oneDay = 1000 * 60 * 60 * 24;
       let diffInTime = endDate.getTime() - startDate.getTime();
       let days = Math.ceil(diffInTime / oneDay);
-      result.days = days
+      result.days = days;
       SuccessDataPayload(res, result);
     } catch (error) {
       ErrorPayload(res, error);

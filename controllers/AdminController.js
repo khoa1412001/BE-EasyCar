@@ -1,11 +1,20 @@
-const roleList = require("../configs/RoleList");
 const User = require("../models/User");
 const Vehicle = require("../models/Vehicle");
-const RegisterVehicle = require("../models/VehicleRegister");
 const UserVerificationRequest = require("../models/UserVerificationRequest");
 const VehicleRegister = require("../models/VehicleRegister");
+const WithdrawRequest = require("../models/WithdrawRequest");
+
+const roleList = require("../configs/RoleList");
 const statusList = require("../configs/StatusList");
-const { ErrorMsgPayload } = require("../payloads");
+const carStatusList = require("../configs/CarStatus");
+
+const {
+  ErrorMsgPayload,
+  ErrorPayload,
+  SuccessDataPayload,
+  SuccessMsgPayload,
+} = require("../payloads");
+
 const AdminController = {
   GetUserList: async (req, res) => {
     const perPage = 3;
@@ -103,10 +112,10 @@ const AdminController = {
     var totalPage = 0;
     try {
       if (page === 1) {
-        let totalRequest = await PaymentRequest.countDocuments({ status: statusList.PENDING });
+        let totalRequest = await WithdrawRequest.countDocuments({ status: statusList.PENDING });
         totalPage = Math.ceil(totalRequest / perPage);
       }
-      const data = await PaymentRequest.find({ status: statusList.PENDING })
+      const data = await WithdrawRequest.find({ status: statusList.PENDING })
         .populate(
           "userId",
           "avatar email username bank banknumber bankaccountname phoneNumber location"
@@ -123,5 +132,71 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
+  DenyWithdraw: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const withdraw = await WithdrawRequest.findById(id);
+      withdraw.status = statusList.DECLINE;
+      await User.findByIdAndUpdate(withdraw.userId, { $inc: { balance: withdraw.amount } });
+      await withdraw.save();
+      SuccessMsgPayload(res, "Từ chối thành công");
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  AcceptWithdraw: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const withdraw = await WithdrawRequest.findById(id);
+      withdraw.status = statusList.ACCEPT;
+      await withdraw.save();
+      SuccessMsgPayload(res, "Chấp nhận thành công");
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  DeleteVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+      });
+      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+      await vehicle.delete();
+      return res.status(200).json({ message: "Xóa xe thành công" });
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  PostponeVehicle: async (req, res) => {
+    try {
+      const vehicleId = req.params.id;
+      await Vehicle.findByIdAndUpdate(vehicleId, { status: carStatusList.POSTPONE });
+      return res.status(200).json({ message: "Tạm dừng xe thành công" });
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  ResumeVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      await Vehicle.findByIdAndUpdate(vehicleId, { status: carStatusList.ALLOW });
+      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetDetailVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const result = await Vehicle.findById(vehicleId).lean();
+      if (!result) ErrorMsgPayload(res, "Không tìm thấy xe");
+      SuccessDataPayload(res, result);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  AcceptVehicleRegister: async (req, res) => {},
+  DenyVehicleRegister: async (req, res) => {},
 };
 module.exports = AdminController;
