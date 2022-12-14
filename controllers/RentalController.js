@@ -33,7 +33,7 @@ const RentalController = {
       await newRequest.save();
       return res.status(200).json({ message: "Đăng ký xe thành công" });
     } catch (error) {
-      errorPayload(res, error);
+      ErrorPayload(res, error);
     }
   },
   GetRentalHistory: async (req, res) => {
@@ -68,7 +68,10 @@ const RentalController = {
         .select("-userId")
         .populate({
           path: "vehicleId",
-          populate: { path: "ownerId", select: "-_id location avatar phoneNumber username" },
+          populate: {
+            path: "ownerId",
+            select: "-_id location avatar phoneNumber username",
+          },
         })
         .lean();
       let startDate = new Date(result.rentalDateStart);
@@ -107,10 +110,10 @@ const RentalController = {
   },
   GetDetailForStatusUpdate: async (req, res) => {
     try {
-      const ownedVehicle = await VehicleRentalHistory.findById(
-        req.params.id).populate({
+      const ownedVehicle = await VehicleRentalHistory.findById(req.params.id)
+        .populate({
           path: "vehicleId",
-          select: "-_id brand model year licenseplate" 
+          select: "-_id brand model year licenseplate",
         })
         .lean();
       SuccessDataPayload(res, ownedVehicle);
@@ -120,15 +123,14 @@ const RentalController = {
   },
   GetRentalStatusDetail: async (req, res) => {
     try {
-      const rentalHisotry = await VehicleRentalHistory.findById(
-        req.params.id)
+      const rentalHisotry = await VehicleRentalHistory.findById(req.params.id)
         .select("rentalDateStart rentalDateEnd")
         .populate({
           path: "vehicleId",
-          select: "-_id brand model year licenseplate" 
+          select: "-_id brand model year licenseplate",
         })
         .populate({
-          path: "rentalStatusId"
+          path: "rentalStatusId",
         })
         .lean();
       SuccessDataPayload(res, rentalHisotry);
@@ -138,8 +140,7 @@ const RentalController = {
   },
   GetContractData: async (req, res) => {
     try {
-      const rentalHisotry = await VehicleRentalHistory.findById(
-        req.params.id)
+      const rentalHisotry = await VehicleRentalHistory.findById(req.params.id)
         .select("rentalDateStart rentalDateEnd createdAt rentprice totalPrice")
         .populate({
           path: "vehicleId",
@@ -159,7 +160,7 @@ const RentalController = {
     } catch (error) {
       ErrorPayload(res, error);
     }
-  }
+  },
 };
 
 module.exports = RentalController;

@@ -18,9 +18,9 @@ const OwnedVehicleController = {
       )
         .populate("ownerId", "location")
         .lean();
-      SuccessDataPayload(res, ownedVehicle);
+      return SuccessDataPayload(res, ownedVehicle);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   DeleteVehicle: async (req, res) => {
@@ -34,7 +34,7 @@ const OwnedVehicleController = {
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   PostponeVehicle: async (req, res) => {
@@ -49,7 +49,7 @@ const OwnedVehicleController = {
       );
       return res.status(200).json({ message: "Tạm dừng xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   ResumeVehicle: async (req, res) => {
@@ -64,7 +64,7 @@ const OwnedVehicleController = {
       );
       return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetVehicleStatus: async (req, res) => {
@@ -73,7 +73,7 @@ const OwnedVehicleController = {
       const result = await VehicleStatus.find({ vehicleId: vehicleId }, "createdAt").lean();
       return res.status(200).json({ data: result });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetHistoryRental: async (req, res) => {
@@ -85,16 +85,19 @@ const OwnedVehicleController = {
       )
         .populate("userId", "username -_id")
         .lean();
-      SuccessDataPayload(res, result);
+      return SuccessDataPayload(res, result);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetDetailRental: async (req, res) => {
     try {
       const rentalId = req.params.id;
       const result = await VehicleRentalHistory.findById(rentalId)
-        .populate({ path: "userId", select: "-_id avatar phoneNumber username" })
+        .populate({
+          path: "userId",
+          select: "-_id avatar phoneNumber username",
+        })
         .populate("vehicleId")
         .lean();
       let startDate = new Date(result.rentalDateStart);
@@ -103,9 +106,9 @@ const OwnedVehicleController = {
       let diffInTime = endDate.getTime() - startDate.getTime();
       let days = Math.ceil(diffInTime / oneDay);
       result.days = days;
-      SuccessDataPayload(res, result);
+      return SuccessDataPayload(res, result);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetDetailStatus: async (req, res) => {
@@ -117,9 +120,9 @@ const OwnedVehicleController = {
           select: "brand model year licenseplate",
         })
         .lean();
-      SuccessDataPayload(res, result);
+      return SuccessDataPayload(res, result);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   UpdateVehicleStatus: async (req, res) => {
@@ -137,21 +140,20 @@ const OwnedVehicleController = {
         else rental.statusvideo = item.url;
       });
       await rental.save();
-      SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
+      return SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetDetailForStatusUpdate: async (req, res) => {
     try {
       const ownedVehicle = await Vehicle.findById(
-        req.params.id ,
+        req.params.id,
         "brand model year licenseplate"
-      )
-        .lean();
-      SuccessDataPayload(res, ownedVehicle);
+      ).lean();
+      return SuccessDataPayload(res, ownedVehicle);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
 };

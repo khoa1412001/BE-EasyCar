@@ -16,6 +16,7 @@ const {
 } = require("../payloads");
 
 const AdminController = {
+  //user
   GetUserList: async (req, res) => {
     const perPage = 3;
     const page = req.query.page || 1;
@@ -39,6 +40,48 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
+  GetDetailUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id).select("-password").lean();
+      if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
+      return SuccessDataPayload(res, user);
+    } catch (error) {
+      return ErrorPayload(error);
+    }
+  },
+  SuspendUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
+      user.status = false;
+      await user.save();
+      return SuccessMsgPayload(res, "Tạm dừng người dùng thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  ActivateUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
+      user.status = true;
+      await user.save();
+      return SuccessMsgPayload(res, "Tạm dừng người dùng thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  DeleteUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
+      await user.delete();
+      return SuccessMsgPayload(res, "Xóa người dùng thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  //vehicle
   GetVehicleList: async (req, res) => {
     const perPage = 3;
     const page = req.query.page || 1;
@@ -112,7 +155,9 @@ const AdminController = {
     var totalPage = 0;
     try {
       if (page === 1) {
-        let totalRequest = await WithdrawRequest.countDocuments({ status: statusList.PENDING });
+        let totalRequest = await WithdrawRequest.countDocuments({
+          status: statusList.PENDING,
+        });
         totalPage = Math.ceil(totalRequest / perPage);
       }
       const data = await WithdrawRequest.find({ status: statusList.PENDING })
@@ -137,11 +182,13 @@ const AdminController = {
       const id = req.params.id;
       const withdraw = await WithdrawRequest.findById(id);
       withdraw.status = statusList.DECLINE;
-      await User.findByIdAndUpdate(withdraw.userId, { $inc: { balance: withdraw.amount } });
+      await User.findByIdAndUpdate(withdraw.userId, {
+        $inc: { balance: withdraw.amount },
+      });
       await withdraw.save();
-      SuccessMsgPayload(res, "Từ chối thành công");
+      return SuccessMsgPayload(res, "Từ chối thành công");
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   AcceptWithdraw: async (req, res) => {
@@ -150,9 +197,9 @@ const AdminController = {
       const withdraw = await WithdrawRequest.findById(id);
       withdraw.status = statusList.ACCEPT;
       await withdraw.save();
-      SuccessMsgPayload(res, "Chấp nhận thành công");
+      return SuccessMsgPayload(res, "Chấp nhận thành công");
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   DeleteVehicle: async (req, res) => {
@@ -165,35 +212,39 @@ const AdminController = {
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   PostponeVehicle: async (req, res) => {
     try {
       const vehicleId = req.params.id;
-      await Vehicle.findByIdAndUpdate(vehicleId, { status: carStatusList.POSTPONE });
+      await Vehicle.findByIdAndUpdate(vehicleId, {
+        status: carStatusList.POSTPONE,
+      });
       return res.status(200).json({ message: "Tạm dừng xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   ResumeVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      await Vehicle.findByIdAndUpdate(vehicleId, { status: carStatusList.ALLOW });
+      await Vehicle.findByIdAndUpdate(vehicleId, {
+        status: carStatusList.ALLOW,
+      });
       return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetDetailVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
       const result = await Vehicle.findById(vehicleId).lean();
-      if (!result) ErrorMsgPayload(res, "Không tìm thấy xe");
-      SuccessDataPayload(res, result);
+      if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
+      return SuccessDataPayload(res, result);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   AcceptVehicleRegister: async (req, res) => {},
