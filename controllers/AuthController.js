@@ -7,12 +7,14 @@ var mongoose = require("mongoose"),
   User = require("../models/User"),
   jwtService = require("../services/JWTService"),
   { OAuth2Client } = require("google-auth-library"),
+  roleList = require("../configs/RoleList");
   axios = require("axios");
 dotenv.config();
 const CLIENT_URL = process.env.CLIENT_URL;
 const googleClient = new OAuth2Client({
   clientId: `${process.env.GOOGLE_OAUTH_CLIENT_ID}`,
 });
+
 const AuthController = {
   LoginAdmin: async (req, res) => {
     try {
@@ -21,7 +23,7 @@ const AuthController = {
         ErrorMsgPayload(res, "Sai tài khoản hoặc mật khẩu, vui lòng kiểm tra lại!");
       if (!user.status) return ErrorMsgPayload(res, "Tài khoản này chưa được xác thực");
       if (user.role === roleList.CUSTOMER) ErrorMsgPayload(res, "Đây không phải tài khoản admin");
-      const accessToken = jwtService.generateToken(user._id);
+      const accessToken = jwtService.generateToken(user._id,user.role);
       return res.status(200).json({ accesstoken: accessToken });
     } catch (error) {
       console.log(error.message);
@@ -60,7 +62,7 @@ const AuthController = {
         });
       if (!user.status)
         return res.status(400).json({ message: "Tài khoản này chưa được xác thực" });
-      const accessToken = jwtService.generateToken(user._id);
+      const accessToken = jwtService.generateToken(user._id,user.role);
       return res.status(200).json({ accesstoken: accessToken });
     } catch (error) {
       console.log(error.message);
