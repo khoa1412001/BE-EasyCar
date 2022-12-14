@@ -15,4 +15,5 @@ router.post(
   parser.fields([{ name: "statusimage" }, { name: "statusvideo" }]),
   ownedVehicleController.UpdateVehicleStatus
 );
+router.get("/info/:id", ownedVehicleController.GetDetailForStatusUpdate);
 module.exports = router;

@@ -10,5 +10,7 @@ router.post(
   parser.fields([{ name: "statusimage" }, { name: "statusvideo" }]),
   rentalController.UpdateVehicleStatus
 );
-
+router.get("/info/:id",rentalController.GetDetailForStatusUpdate)
+router.get("/detail-status/:id",rentalController.GetRentalStatusDetail)
+router.get("/contract/:id",rentalController.GetContractData)
 module.exports = router;

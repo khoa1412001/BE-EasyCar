@@ -70,7 +70,7 @@ const OwnedVehicleController = {
   GetVehicleStatus: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const result = await VehicleStatus.find({ vehicleId: vehicleId }, "updatedAt").lean();
+      const result = await VehicleStatus.find({ vehicleId: vehicleId }, "createdAt").lean();
       return res.status(200).json({ data: result });
     } catch (error) {
       ErrorPayload(res, error);
@@ -138,6 +138,18 @@ const OwnedVehicleController = {
       });
       await rental.save();
       SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetDetailForStatusUpdate: async (req, res) => {
+    try {
+      const ownedVehicle = await Vehicle.findById(
+        req.params.id ,
+        "brand model year licenseplate"
+      )
+        .lean();
+      SuccessDataPayload(res, ownedVehicle);
     } catch (error) {
       ErrorPayload(res, error);
     }

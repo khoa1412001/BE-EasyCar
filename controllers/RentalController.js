@@ -105,6 +105,61 @@ const RentalController = {
       ErrorPayload(res, error);
     }
   },
+  GetDetailForStatusUpdate: async (req, res) => {
+    try {
+      const ownedVehicle = await VehicleRentalHistory.findById(
+        req.params.id).populate({
+          path: "vehicleId",
+          select: "-_id brand model year licenseplate" 
+        })
+        .lean();
+      SuccessDataPayload(res, ownedVehicle);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetRentalStatusDetail: async (req, res) => {
+    try {
+      const rentalHisotry = await VehicleRentalHistory.findById(
+        req.params.id)
+        .select("rentalDateStart rentalDateEnd")
+        .populate({
+          path: "vehicleId",
+          select: "-_id brand model year licenseplate" 
+        })
+        .populate({
+          path: "rentalStatusId"
+        })
+        .lean();
+      SuccessDataPayload(res, rentalHisotry);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  },
+  GetContractData: async (req, res) => {
+    try {
+      const rentalHisotry = await VehicleRentalHistory.findById(
+        req.params.id)
+        .select("rentalDateStart rentalDateEnd createdAt rentprice totalPrice")
+        .populate({
+          path: "vehicleId",
+          select: "brand model year licenseplate kmlimit priceover",
+          options: { withDeleted: true },
+          populate: {
+            path: "ownerId",
+            select: "location username phoneNumber socialId",
+          },
+        })
+        .populate({
+          path: "userId",
+          select: "location username phoneNumber socialId",
+        })
+        .lean();
+      SuccessDataPayload(res, rentalHisotry);
+    } catch (error) {
+      ErrorPayload(res, error);
+    }
+  }
 };
 
 module.exports = RentalController;
