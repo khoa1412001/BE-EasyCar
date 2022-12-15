@@ -22,7 +22,7 @@ const AdminController = {
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
-      if (page === 1) {
+      if (page == 1) {
         let totalUser = await User.countDocuments({ role: roleList.CUSTOMER });
         totalPage = Math.ceil(totalUser / perPage);
       }
@@ -87,7 +87,7 @@ const AdminController = {
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
-      if (page === 1) {
+      if (page == 1) {
         let totalRequest = await Vehicle.countDocuments();
         totalPage = Math.ceil(totalRequest / perPage);
       }
@@ -156,7 +156,7 @@ const AdminController = {
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
-      if (page === 1) {
+      if (page == 1) {
         let totalRequest = await VehicleRegister.countDocuments({ status: statusList.PENDING });
         totalPage = Math.ceil(totalRequest / perPage);
       }
@@ -224,7 +224,7 @@ const AdminController = {
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
-      if (page === 1) {
+      if (page == 1) {
         let totalRequest = await UserVerificationRequest.countDocuments({
           status: statusList.PENDING,
         });
@@ -287,13 +287,11 @@ const AdminController = {
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
-      if (page === 1) {
-        let totalRequest = await WithdrawRequest.countDocuments({
-          status: statusList.PENDING,
-        });
+      if (page == 1) {
+        let totalRequest = await WithdrawRequest.countDocuments();
         totalPage = Math.ceil(totalRequest / perPage);
       }
-      const data = await WithdrawRequest.find({ status: statusList.PENDING })
+      const data = await WithdrawRequest.find()
         .populate(
           "userId",
           "avatar email username bank banknumber bankaccountname phoneNumber location"
