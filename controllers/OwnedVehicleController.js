@@ -40,13 +40,13 @@ const OwnedVehicleController = {
   PostponeVehicle: async (req, res) => {
     try {
       const vehicleId = req.params.id;
-      await Vehicle.findOneAndUpdate(
-        {
-          _id: vehicleId,
-          ownerId: req.user.userId,
-        },
-        { status: carStatusList.POSTPONE }
-      );
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+        ownerId: req.user.userId,
+      });
+      if (!vehicle) ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.status = carStatusList.POSTPONE;
+      await vehicle.save();
       return res.status(200).json({ message: "Tạm dừng xe thành công" });
     } catch (error) {
       return ErrorPayload(res, error);
@@ -55,13 +55,13 @@ const OwnedVehicleController = {
   ResumeVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      await Vehicle.findOneAndUpdate(
-        {
-          _id: vehicleId,
-          ownerId: req.user.userId,
-        },
-        { status: carStatusList.ALLOW }
-      );
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+        ownerId: req.user.userId,
+      });
+      if (!vehicle) ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.status = carStatusList.ALLOW;
+      await vehicle.save();
       return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       return ErrorPayload(res, error);

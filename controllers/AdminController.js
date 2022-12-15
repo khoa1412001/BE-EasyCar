@@ -103,17 +103,64 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
-
+  DeleteVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+      });
+      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+      await vehicle.delete();
+      return res.status(200).json({ message: "Xóa xe thành công" });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  PostponeVehicle: async (req, res) => {
+    try {
+      const vehicleId = req.params.id;
+      const vehicle = await Vehicle.findById(vehicleId);
+      if (!vehicle) return ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.status = carStatusList.POSTPONE;
+      await vehicle.save();
+      return res.status(200).json({ message: "Tạm dừng xe thành công" });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  ResumeVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const vehicle = await Vehicle.findById(vehicleId);
+      if (!vehicle) return ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.status = carStatusList.ALLOW;
+      await vehicle.save();
+      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  GetDetailVehicle: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const result = await Vehicle.findById(vehicleId).lean();
+      if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
+      return SuccessDataPayload(res, result);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  //register vehicle
   GetVehicleRegisterList: async (req, res) => {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
       if (page === 1) {
-        let totalRequest = await VehicleRegister.countDocuments();
+        let totalRequest = await VehicleRegister.countDocuments({ status: statusList.PENDING });
         totalPage = Math.ceil(totalRequest / perPage);
       }
-      const data = await VehicleRegister.find()
+      const data = await VehicleRegister.find({ status: statusList.PENDING })
         .select("licenseplate brand model year fueltype fuelconsumption transmission type seats")
         .populate("ownerId", "email username phoneNumber")
         .skip(perPage * (page - 1))
@@ -125,16 +172,65 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
+  GetVehicleRegisterDetail: async (req, res) => {
+    try {
+      const result = await VehicleRegister.findById(req.params.id).populate(
+        "ownerId",
+        "username email phoneNumber gender location"
+      );
+      if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe đăng ký");
+      return SuccessDataPayload(res, result);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  AcceptVehicleRegister: async (req, res) => {
+    try {
+      const register = await VehicleRegister.findById(req.params.id);
+      if (!register) return ErrorMsgPayload(res, "Không tìm thấy đăng ký xe");
+      register.status = statusList.ACCEPT;
+
+      const clone = register.toJSON();
+      delete clone._id;
+      delete clone.createdAt;
+      delete clone.updatedAt;
+      delete clone.__v;
+      delete clone.status;
+
+      const vehicle = new Vehicle(clone);
+
+      await vehicle.save();
+      await register.save();
+
+      return SuccessMsgPayload(res, "Chấp nhận đăng ký xe thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  DenyVehicleRegister: async (req, res) => {
+    try {
+      const register = await VehicleRegister.findById(req.params.id);
+      if (!register) return ErrorMsgPayload(res, "Không tìm thấy đăng ký xe");
+      register.status = statusList.DECLINE;
+      await register.save();
+      return SuccessMsgPayload(res, "Từ chối đăng ký xe thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  //verification
   GetVerificationList: async (req, res) => {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
     try {
       if (page === 1) {
-        let totalRequest = await UserVerificationRequest.countDocuments();
+        let totalRequest = await UserVerificationRequest.countDocuments({
+          status: statusList.PENDING,
+        });
         totalPage = Math.ceil(totalRequest / perPage);
       }
-      const data = await UserVerificationRequest.find()
+      const data = await UserVerificationRequest.find({ status: statusList.PENDING })
         .select("username driverLicenseNumber bod")
         .populate("userId", "avatar email phoneNumber location")
         .skip(perPage * (page - 1))
@@ -149,6 +245,43 @@ const AdminController = {
       return res.status(400).json({ message: "Lỗi hệ thống" });
     }
   },
+  GetVerificationDetail: async (req, res) => {
+    try {
+      const result = await UserVerificationRequest.findById(req.params.id).lean();
+      if (!result) return ErrorMsgPayload(res, "Không tìm thấy yêu cầu xác thực");
+      return SuccessDataPayload(res, result);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  DenyVerification: async (req, res) => {
+    try {
+      const item = await UserVerificationRequest.findById(req.params.id);
+      if (!item) return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
+      item.status = statusList.DECLINE;
+      await item.save();
+      return SuccessMsgPayload(res, "Từ chối xác thực người dùng thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  AcceptVerification: async (req, res) => {
+    try {
+      const verification = await UserVerificationRequest.findById(req.params.id);
+      const user = await User.findById(verification.userId);
+      user.fullname = verification.username;
+      user.driverLicenseImg = verification.driverLicenseImg;
+      user.driverLicenseNumber = verification.driverLicenseNumber;
+      user.verification = true;
+      verification.status = statusList.ACCEPT;
+      await verification.save();
+      await user.save();
+      return SuccessMsgPayload(res, "Chấp nhận xác thực người dùng thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  //withdraw
   GetWithdrawList: async (req, res) => {
     const perPage = 3;
     const page = req.query.page || 1;
@@ -202,52 +335,5 @@ const AdminController = {
       return ErrorPayload(res, error);
     }
   },
-  DeleteVehicle: async (req, res) => {
-    const vehicleId = req.params.id;
-    try {
-      const vehicle = await Vehicle.findOne({
-        _id: vehicleId,
-      });
-      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
-      await vehicle.delete();
-      return res.status(200).json({ message: "Xóa xe thành công" });
-    } catch (error) {
-      return ErrorPayload(res, error);
-    }
-  },
-  PostponeVehicle: async (req, res) => {
-    try {
-      const vehicleId = req.params.id;
-      await Vehicle.findByIdAndUpdate(vehicleId, {
-        status: carStatusList.POSTPONE,
-      });
-      return res.status(200).json({ message: "Tạm dừng xe thành công" });
-    } catch (error) {
-      return ErrorPayload(res, error);
-    }
-  },
-  ResumeVehicle: async (req, res) => {
-    const vehicleId = req.params.id;
-    try {
-      await Vehicle.findByIdAndUpdate(vehicleId, {
-        status: carStatusList.ALLOW,
-      });
-      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
-    } catch (error) {
-      return ErrorPayload(res, error);
-    }
-  },
-  GetDetailVehicle: async (req, res) => {
-    const vehicleId = req.params.id;
-    try {
-      const result = await Vehicle.findById(vehicleId).lean();
-      if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
-      return SuccessDataPayload(res, result);
-    } catch (error) {
-      return ErrorPayload(res, error);
-    }
-  },
-  AcceptVehicleRegister: async (req, res) => {},
-  DenyVehicleRegister: async (req, res) => {},
 };
 module.exports = AdminController;
