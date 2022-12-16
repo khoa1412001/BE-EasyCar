@@ -46,7 +46,7 @@ const AdminController = {
       if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
       return SuccessDataPayload(res, user);
     } catch (error) {
-      return ErrorPayload(error);
+      return ErrorPayload(res,error);
     }
   },
   SuspendUser: async (req, res) => {
@@ -273,6 +273,7 @@ const AdminController = {
       user.driverLicenseImg = verification.driverLicenseImg;
       user.driverLicenseNumber = verification.driverLicenseNumber;
       user.verification = true;
+      user.bod = verification.bod;
       verification.status = statusList.ACCEPT;
       await verification.save();
       await user.save();

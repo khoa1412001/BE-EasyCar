@@ -17,12 +17,12 @@ const VehicleController = {
       const checkPlate = await VehicleRegister.countDocuments({
         licenseplate: req.body.licenseplate,
       });
-      if (!checkPlate) return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
+      if (checkPlate) return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
       const vehicle = await uploadArray(req.files);
       const newVehicle = new VehicleRegister(req.body);
       newVehicle.vehicleimage = vehicle.map((item) => item.url);
       newVehicle.seats = newVehicle.type.split("-").pop();
-      newVehicle.userId = req.user.userId;
+      newVehicle.ownerId = req.user.userId;
       await newVehicle.save();
       return res.status(200).json({ message: "Đăng ký xe thành công" });
     } catch (error) {
