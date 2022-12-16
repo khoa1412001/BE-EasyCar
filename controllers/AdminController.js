@@ -92,7 +92,7 @@ const AdminController = {
         totalPage = Math.ceil(totalRequest / perPage);
       }
       const data = await Vehicle.find()
-        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats")
+        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats status")
         .populate("ownerId", "email username phoneNumber")
         .skip(perPage * (page - 1))
         .limit(perPage)
@@ -143,7 +143,10 @@ const AdminController = {
   GetDetailVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const result = await Vehicle.findById(vehicleId).lean();
+      const result = await Vehicle.findById(vehicleId).populate(
+        "ownerId",
+        "username email phoneNumber gender location"
+      ).lean();
       if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
       return SuccessDataPayload(res, result);
     } catch (error) {
@@ -259,7 +262,7 @@ const AdminController = {
       const item = await UserVerificationRequest.findById(req.params.id);
       if (!item) return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
       item.status = statusList.DECLINE;
-      await item.save();
+      await item.delete();
       return SuccessMsgPayload(res, "Từ chối xác thực người dùng thành công");
     } catch (error) {
       return ErrorPayload(res, error);

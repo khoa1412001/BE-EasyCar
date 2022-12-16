@@ -168,7 +168,7 @@ const RentalController = {
         _id: req.params.id,
         userId: req.user.userId,
       });
-      if (!rental) return ErrorMsgPayload("Không tìm thấy lịch sử thuê xe");
+      if (!rental) return ErrorMsgPayload(res,"Không tìm thấy lịch sử thuê xe");
       rental.rating = req.body.rating;
       const vehicleId = rental.vehicleId;
       await rental.save();
