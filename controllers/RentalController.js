@@ -7,6 +7,7 @@ const {
   SuccessDataPayload,
   SuccessMsgPayload,
 } = require("../payloads");
+const Vehicle = require("../models/Vehicle");
 
 const RentalController = {
   AddHistoryRental: async (req, res) => {
@@ -33,7 +34,7 @@ const RentalController = {
       await newRequest.save();
       return res.status(200).json({ message: "Đăng ký xe thành công" });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetRentalHistory: async (req, res) => {
@@ -80,9 +81,9 @@ const RentalController = {
       let diffInTime = endDate.getTime() - startDate.getTime();
       let days = Math.ceil(diffInTime / oneDay);
       result.days = days;
-      SuccessDataPayload(res, result);
+      return SuccessDataPayload(res, result);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   UpdateVehicleStatus: async (req, res) => {
@@ -103,9 +104,9 @@ const RentalController = {
         rentalStatusId: result._id,
         carstatusupdate: true,
       });
-      SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
+      return SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetDetailForStatusUpdate: async (req, res) => {
@@ -116,9 +117,9 @@ const RentalController = {
           select: "-_id brand model year licenseplate",
         })
         .lean();
-      SuccessDataPayload(res, ownedVehicle);
+      return SuccessDataPayload(res, ownedVehicle);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetRentalStatusDetail: async (req, res) => {
@@ -133,9 +134,9 @@ const RentalController = {
           path: "rentalStatusId",
         })
         .lean();
-      SuccessDataPayload(res, rentalHisotry);
+      return SuccessDataPayload(res, rentalHisotry);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetContractData: async (req, res) => {
@@ -156,9 +157,34 @@ const RentalController = {
           select: "location username phoneNumber socialId",
         })
         .lean();
-      SuccessDataPayload(res, rentalHisotry);
+      return SuccessDataPayload(res, rentalHisotry);
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
+    }
+  },
+  RateRentalVehicle: async (req, res) => {
+    try {
+      const rental = await VehicleRentalHistory.findOne({
+        _id: req.params.id,
+        userId: req.user.userId,
+      });
+      if (!rental) return ErrorMsgPayload("Không tìm thấy lịch sử thuê xe");
+      rental.rating = req.body.rating;
+      const vehicleId = rental.vehicleId;
+      await rental.save();
+
+      const totalRating = await VehicleRentalHistory.find({
+        vehicleId: vehicleId,
+        rating: { $ne: 0 },
+      })
+        .select("rating")
+        .lean();
+      var rating = totalRating.reduce((prev, curr) => prev + curr.rating, 0);
+      rating = Math.round((rating / totalRating.length) * 10) / 10;
+      await Vehicle.findByIdAndUpdate(vehicleId, { rating: rating });
+      return SuccessMsgPayload(res, "Đánh giá thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
     }
   },
 };
