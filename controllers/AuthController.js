@@ -7,8 +7,8 @@ var mongoose = require("mongoose"),
   User = require("../models/User"),
   jwtService = require("../services/JWTService"),
   { OAuth2Client } = require("google-auth-library"),
-  roleList = require("../configs/RoleList");
-axios = require("axios");
+  roleList = require("../configs/RoleList"),
+  axios = require("axios");
 dotenv.config();
 const CLIENT_URL = process.env.CLIENT_URL;
 const googleClient = new OAuth2Client({
