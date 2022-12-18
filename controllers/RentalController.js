@@ -23,7 +23,7 @@ const RentalController = {
       );
 
       if (!checkResult)
-        return res.status(200).json({
+        return res.status(400).json({
           message: "Lịch đăng ký xe đã bị trùng, vui lòng chọn lại ngày thuê xe",
         });
 
