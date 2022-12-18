@@ -3,11 +3,6 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const VehicleRentalStatusSchema = new Schema(
   {
-    vehicleId: {
-      type: ObjectId,
-      ref: "Vehicle",
-      required: true,
-    },
     engstatus: {
       type: String,
       default: "",
@@ -30,7 +25,4 @@ const VehicleRentalStatusSchema = new Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model(
-  "VehicleRentalStatus",
-  VehicleRentalStatusSchema
-);
+module.exports = mongoose.model("VehicleRentalStatus", VehicleRentalStatusSchema);

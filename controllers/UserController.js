@@ -12,12 +12,12 @@ const {
 } = require("../payloads");
 const UserController = {
   UpdateUserInfo: async (req, res) => {
-    const { location, username, phonenumber, gender } = req.body;
+    const { location, username, phoneNumber, gender } = req.body;
     try {
       const user = await User.findById(req.user.userId);
       if (location) user.location = location;
       if (username) user.username = username;
-      if (phonenumber) user.phoneNumber = phonenumber;
+      if (phoneNumber) user.phoneNumber = phoneNumber;
       if (gender) user.gender = gender;
       await user.save();
       return res.status(200).json({ message: "Cập nhật thông tin thành công" });
@@ -44,7 +44,6 @@ const UserController = {
     try {
       const countRequest = await UserVerificationRequest.countDocuments({
         userId: req.user.userId,
-        status: statusList.PENDING,
       });
       if (countRequest)
         return res.status(400).json({

@@ -71,8 +71,9 @@ router.post("/login", authController.Login);
 
 // router.get('/refresh', authController.refreshToken)
 
-router.post("/check-email", authController.checkEmail); //Kiem tra email
-router.post("/change-password", passport, authController.changePassword); //Doi mat khau
-router.get("/validate-mail/:token", authController.validateMail);
-router.post("/google", authController.loginWithGoogle);
+router.post("/check-email", authController.CheckEmail); //Kiem tra email
+router.post("/change-password", passport, authController.ChangePassword); //Doi mat khau
+router.get("/validate-mail/:token", authController.ValidateMail);
+router.post("/google", authController.LoginWithGoogle);
+router.post("/login-admin", authController.LoginAdmin);
 module.exports = router;

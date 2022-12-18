@@ -22,6 +22,7 @@ const VehicleStatusSchema = new Schema(
     },
     statusimage: {
       type: [String],
+      default: [],
     },
     statusvideo: {
       type: String,

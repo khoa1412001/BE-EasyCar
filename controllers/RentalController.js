@@ -1,4 +1,13 @@
 const VehicleRentalHistory = require("../models/VehicleRentalHistory");
+const VehicleRentalStatus = require("../models/VehicleRentalStatus");
+const { uploadArray } = require("../utils/Cloudinary");
+const {
+  ErrorMsgPayload,
+  ErrorPayload,
+  SuccessDataPayload,
+  SuccessMsgPayload,
+} = require("../payloads");
+const Vehicle = require("../models/Vehicle");
 
 const RentalController = {
   AddHistoryRental: async (req, res) => {
@@ -25,7 +34,7 @@ const RentalController = {
       await newRequest.save();
       return res.status(200).json({ message: "Đăng ký xe thành công" });
     } catch (error) {
-      errorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
   GetRentalHistory: async (req, res) => {
@@ -51,6 +60,131 @@ const RentalController = {
     } catch (error) {
       console.log(error.message);
       return res.status(400).json({ message: "Không thể lấy được lịch sử thuê xe" });
+    }
+  },
+  GetDetailRental: async (req, res) => {
+    try {
+      const rentalId = req.params.id;
+      const result = await VehicleRentalHistory.findById(rentalId)
+        .select("-userId")
+        .populate({
+          path: "vehicleId",
+          populate: {
+            path: "ownerId",
+            select: "-_id location avatar phoneNumber username",
+          },
+        })
+        .lean();
+      let startDate = new Date(result.rentalDateStart);
+      let endDate = new Date(result.rentalDateEnd);
+      const oneDay = 1000 * 60 * 60 * 24;
+      let diffInTime = endDate.getTime() - startDate.getTime();
+      let days = Math.ceil(diffInTime / oneDay);
+      result.days = days;
+      return SuccessDataPayload(res, result);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  UpdateVehicleStatus: async (req, res) => {
+    try {
+      const { id, engstatus, extstatus, intstatus } = req.body;
+      const rental = new VehicleRentalStatus();
+      rental.statusimage = [];
+      rental.engstatus = engstatus;
+      rental.extstatus = extstatus;
+      rental.intstatus = intstatus;
+      const uploadResult = await uploadArray([...req.files.statusimage, ...req.files.statusvideo]);
+      uploadResult.map((item) => {
+        if (item.folder === "statusimage") rental.statusimage.push(item.url);
+        else rental.statusvideo = item.url;
+      });
+      const result = await rental.save();
+      await VehicleRentalHistory.findByIdAndUpdate(id, {
+        rentalStatusId: result._id,
+        carstatusupdate: true,
+      });
+      return SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  GetDetailForStatusUpdate: async (req, res) => {
+    try {
+      const ownedVehicle = await VehicleRentalHistory.findById(req.params.id)
+        .populate({
+          path: "vehicleId",
+          select: "-_id brand model year licenseplate",
+        })
+        .lean();
+      return SuccessDataPayload(res, ownedVehicle);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  GetRentalStatusDetail: async (req, res) => {
+    try {
+      const rentalHisotry = await VehicleRentalHistory.findById(req.params.id)
+        .select("rentalDateStart rentalDateEnd")
+        .populate({
+          path: "vehicleId",
+          select: "-_id brand model year licenseplate",
+        })
+        .populate({
+          path: "rentalStatusId",
+        })
+        .lean();
+      return SuccessDataPayload(res, rentalHisotry);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  GetContractData: async (req, res) => {
+    try {
+      const rentalHisotry = await VehicleRentalHistory.findById(req.params.id)
+        .select("rentalDateStart rentalDateEnd createdAt rentprice totalPrice")
+        .populate({
+          path: "vehicleId",
+          select: "brand model year licenseplate kmlimit priceover",
+          options: { withDeleted: true },
+          populate: {
+            path: "ownerId",
+            select: "location username phoneNumber socialId",
+          },
+        })
+        .populate({
+          path: "userId",
+          select: "location username phoneNumber socialId",
+        })
+        .lean();
+      return SuccessDataPayload(res, rentalHisotry);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  RateRentalVehicle: async (req, res) => {
+    try {
+      const rental = await VehicleRentalHistory.findOne({
+        _id: req.params.id,
+        userId: req.user.userId,
+      });
+      if (!rental) return ErrorMsgPayload(res,"Không tìm thấy lịch sử thuê xe");
+      rental.rating = req.body.rating;
+      const vehicleId = rental.vehicleId;
+      await rental.save();
+
+      const totalRating = await VehicleRentalHistory.find({
+        vehicleId: vehicleId,
+        rating: { $ne: 0 },
+      })
+        .select("rating")
+        .lean();
+      var rating = totalRating.reduce((prev, curr) => prev + curr.rating, 0);
+      rating = Math.round((rating / totalRating.length) * 10) / 10;
+      await Vehicle.findByIdAndUpdate(vehicleId, { rating: rating });
+      return SuccessMsgPayload(res, "Đánh giá thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
     }
   },
 };

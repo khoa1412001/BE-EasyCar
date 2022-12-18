@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const statusList = require("../configs/StatusList");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
+const mongoose_delete = require("mongoose-delete");
 const UserVerificationRequestSchema = new Schema(
   {
     userId: {
@@ -32,7 +33,9 @@ const UserVerificationRequestSchema = new Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model(
-  "UserVerificationRequest",
-  UserVerificationRequestSchema
-);
+UserVerificationRequestSchema.plugin(mongoose_delete, {
+  deletedAt: true,
+  overrideMethods: "all",
+  indexFields: ["deleted", "deletedAt"],
+});
+module.exports = mongoose.model("UserVerificationRequest", UserVerificationRequestSchema);

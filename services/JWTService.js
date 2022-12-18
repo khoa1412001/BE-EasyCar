@@ -7,7 +7,7 @@ function generateToken(id, role) {
     userId: id,
     role: role,
   };
-  const accessToken = jwt.sign(payload, ACCESS_KEY, { expiresIn: "30m" });
+  const accessToken = jwt.sign(payload, ACCESS_KEY, { expiresIn: "2h" });
   // const refreshToken = jwt.sign(payload, REFRESH_KEY, { expiresIn: "30d" });
 
   return accessToken;

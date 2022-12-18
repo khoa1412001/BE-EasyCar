@@ -10,9 +10,9 @@ const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const Vehicle = require("../models/Vehicle");
 const crypto = require('crypto');
 const https = require('https');
-const frontendUrl = 'http://localhost:3000/'
+// const frontendUrl = 'http://localhost:3000/'
 // const backendUrl = 'http://localhost:5000/'
-// const frontendUrl = 'https://fe-easycar.vercel.app/'
+const frontendUrl = 'https://fe-easycar.vercel.app/'
 const backendUrl = 'https://be-easycar.vercel.app/'
 
 const PaymentController = {

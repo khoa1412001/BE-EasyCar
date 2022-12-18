@@ -1,6 +1,8 @@
 var mongoose = require("mongoose"),
   Schema = mongoose.Schema,
   role = require("../configs/RoleList");
+const mongoose_delete = require("mongoose-delete");
+
 const UserSchema = new Schema(
   {
     username: {
@@ -28,9 +30,20 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    driverLicenseNumber: {
+      type: String,
+      default: "",
+    },
+    fullname: {
+      type: String,
+      default: "",
+    }, //in license
     driverLicenseImg: {
       type: String,
       default: "",
+    },
+    bod: {
+      type: Date,
     },
     avatar: {
       type: String,
@@ -75,5 +88,9 @@ const UserSchema = new Schema(
   },
   { timestamps: true }
 );
-
+UserSchema.plugin(mongoose_delete, {
+  deletedAt: true,
+  overrideMethods: "all",
+  indexFields: ["deleted", "deletedAt"],
+});
 module.exports = mongoose.model("User", UserSchema);
