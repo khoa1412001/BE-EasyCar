@@ -55,10 +55,11 @@ async function GetVehicleWithFilter(req, res) {
     let results = await Vehicle.find(
       filter,
       "brand model fueltype transmission seats rating modelimage rentprice location latitude longitude"
-    ).lean();
+    ).populate("ownerId", "location")
+    .lean();
     results = results.filter((item) => {
       var endPoint = ({ longitude, latitude } = item);
-      return haversine(startPoint, endPoint, { threshold: 3, unit: "mile" });
+      return haversine(startPoint, endPoint, { threshold: 3, unit: "km" });
     });
     results.map((result) => {
       result.totalprice = Math.round(result.rentprice * 1.1 * days);

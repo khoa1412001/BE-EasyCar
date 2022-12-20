@@ -89,7 +89,7 @@ const UserController = {
       const userId = req.user.userId;
       const user = await User.findById(
         userId,
-        "username email avatar phoneNumber location gender balance verification bank bankaccountname banknumber"
+        "username email avatar phoneNumber location gender balance verification bank bankaccountname banknumber latitude longtitude"
       ).lean();
       return res.status(200).json({ data: user });
     } catch (error) {
