@@ -66,7 +66,6 @@ async function GetVehicleWithFilter(req, res) {
       result.totalprice = Math.round(result.totalprice + result.basicinsurance);
     });
     return res.status(200).json({
-      totalPage: Math.ceil(totalVehicle / perPage),
       data: results,
     });
   } catch (error) {
