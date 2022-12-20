@@ -80,6 +80,18 @@ const VehicleSchema = new Schema(
     modelimage: {
       type: String,
     },
+    latitude: {
+      type: Number,
+      default: 0,
+    },
+    longitude: {
+      type: Number,
+      default: 0,
+    },
+    location: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
