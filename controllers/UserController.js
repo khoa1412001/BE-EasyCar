@@ -12,13 +12,15 @@ const {
 } = require("../payloads");
 const UserController = {
   UpdateUserInfo: async (req, res) => {
-    const { location, username, phoneNumber, gender } = req.body;
+    const { location, username, phoneNumber, gender, longitude, latitude } = req.body;
     try {
       const user = await User.findById(req.user.userId);
       if (location) user.location = location;
       if (username) user.username = username;
       if (phoneNumber) user.phoneNumber = phoneNumber;
       if (gender) user.gender = gender;
+      if (longitude) user.longitude = longitude;
+      if (latitude) user.latitude = latitude;
       await user.save();
       return res.status(200).json({ message: "Cập nhật thông tin thành công" });
     } catch (err) {
@@ -87,7 +89,7 @@ const UserController = {
       const userId = req.user.userId;
       const user = await User.findById(
         userId,
-        "username email avatar phoneNumber location gender balance verification bank bankaccountname banknumber"
+        "username email avatar phoneNumber location gender balance verification bank bankaccountname banknumber latitude longitude"
       ).lean();
       return res.status(200).json({ data: user });
     } catch (error) {

@@ -1,9 +1,12 @@
 const carStatusList = require("../configs/CarStatus");
 const Vehicle = require("../models/Vehicle");
+const haversine = require("haversine");
 
 async function GetVehicleWithFilter(req, res) {
-  let perPage = 10; //10
-  let page = Number(req.body.page) || 1;
+  // let perPage = 10; //10
+  // let page = Number(req.body.page) || 1;
+  // check thoi gian
+  const startPoint = ({ longitude, latitude } = req.body);
   let startDate = new Date(Number(req.body.startdate) * 1000);
   let endDate = new Date(Number(req.body.enddate) * 1000);
   const oneDay = 1000 * 60 * 60 * 24;
@@ -46,24 +49,24 @@ async function GetVehicleWithFilter(req, res) {
     filter.rating = { $gte: Number(rating.value.split("+")[0]) };
   }
   try {
-    var totalVehicle = 0;
-    if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
-    console.log(totalVehicle);
+    // var totalVehicle = 0;
+    // if (page === 1) totalVehicle = await Vehicle.countDocuments(filter);
+    // console.log(totalVehicle);
     let results = await Vehicle.find(
       filter,
-      "brand model fueltype transmission seats rating modelimage rentprice"
-    )
-      .populate("ownerId", "location")
-      .skip(perPage * page - perPage)
-      .limit(perPage)
-      .lean();
+      "brand model fueltype transmission seats rating modelimage rentprice location latitude longitude"
+    ).populate("ownerId", "location")
+    .lean();
+    results = results.filter((item) => {
+      var endPoint = ({ longitude, latitude } = item);
+      return haversine(startPoint, endPoint, { threshold: 3, unit: "km" });
+    });
     results.map((result) => {
       result.totalprice = Math.round(result.rentprice * 1.1 * days);
       result.basicinsurance = Math.round(result.totalprice * 0.085);
       result.totalprice = Math.round(result.totalprice + result.basicinsurance);
     });
     return res.status(200).json({
-      totalPage: Math.ceil(totalVehicle / perPage),
       data: results,
     });
   } catch (error) {

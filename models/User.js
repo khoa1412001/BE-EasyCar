@@ -47,8 +47,7 @@ const UserSchema = new Schema(
     },
     avatar: {
       type: String,
-      default:
-        "https://res.cloudinary.com/dmdtcm833/image/upload/v1669454227/avatar/default.jpg",
+      default: "https://res.cloudinary.com/dmdtcm833/image/upload/v1669454227/avatar/default.jpg",
     },
     socialId: {
       type: String,
@@ -84,6 +83,14 @@ const UserSchema = new Schema(
     bankaccountname: {
       type: String,
       default: "",
+    },
+    latitude: {
+      type: Number,
+      default: 0,
+    },
+    longitude: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
