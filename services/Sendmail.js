@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config;
-function Sendmail(email, subject, text) {
+async function Sendmail(email, subject, text) {
   var transporter = nodemailer.createTransport({
     // config mail server
     service: "gmail",
@@ -15,7 +15,7 @@ function Sendmail(email, subject, text) {
     subject: subject,
     text: text,
   };
-  transporter.sendMail(mailOptions, (err, info) => {
+  await transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log(err);
       return false;
