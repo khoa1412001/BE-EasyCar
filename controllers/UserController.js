@@ -34,7 +34,7 @@ const UserController = {
       //xu ly xoa hinh anh cu~
       const user = await User.findById(req.user.userId);
       const result = await uploadSingle(req.file);
-      user.avatar = result.url;
+      user.avatar = result.secure_url;
       await user.save();
       return res.status(200).json({ message: "Cập nhật ảnh đại diện thành công" });
     } catch (error) {
@@ -59,7 +59,7 @@ const UserController = {
       newRequest.username = req.body.username;
       newRequest.driverLicenseNumber = req.body.driverlicense;
       newRequest.bod = req.body.bod;
-      newRequest.driverLicenseImg = result.url;
+      newRequest.driverLicenseImg = result.secure_url;
       await newRequest.save();
       res.status(200).json({
         message: "Tạo yêu cầu xác thực tài khoản thành công",

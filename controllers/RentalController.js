@@ -96,8 +96,8 @@ const RentalController = {
       rental.intstatus = intstatus;
       const uploadResult = await uploadArray([...req.files.statusimage, ...req.files.statusvideo]);
       uploadResult.map((item) => {
-        if (item.folder === "statusimage") rental.statusimage.push(item.url);
-        else rental.statusvideo = item.url;
+        if (item.folder === "statusimage") rental.statusimage.push(item.secure_url);
+        else rental.statusvideo = item.secure_url;
       });
       const result = await rental.save();
       await VehicleRentalHistory.findByIdAndUpdate(id, {

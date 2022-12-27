@@ -20,7 +20,7 @@ const VehicleController = {
       if (checkPlate) return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
       const vehicle = await uploadArray(req.files);
       const newVehicle = new VehicleRegister(req.body);
-      newVehicle.vehicleimage = vehicle.map((item) => item.url);
+      newVehicle.vehicleimage = vehicle.map((item) => item.secure_url);
       newVehicle.seats = newVehicle.type.split("-").pop();
       newVehicle.ownerId = req.user.userId;
       await newVehicle.save();
