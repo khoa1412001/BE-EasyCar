@@ -5,6 +5,7 @@ async function Sendmail(email, subject, text) {
     // config mail server
     port: 465,
     service: "gmail",
+    host: "smtp.gmail.com",
     auth: {
       user: process.env.MAIL_USERNAME,
       pass: process.env.MAIL_PASSWORD,
