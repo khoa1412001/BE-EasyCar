@@ -37,13 +37,13 @@ const AuthController = {
     var newUser = new User(req.body);
     try {
       newUser.password = bcrypt.hashSync(req.body.password, 10);
-      await newUser.save();
+      // await newUser.save();
       const subject = "Kích hoạt tài khoản";
       const token = jwtService.generateMailToken(newUser.email);
       var context =
         "Bấm vào đường link bên dưới để xác thực tài khoản\n" +
         `${CLIENT_URL}/validate?token=${token}`;
-      sendMail(newUser.email, subject, context);
+      await sendMail(newUser.email, subject, context).then(result => console.log("Success")).catch(error => console.log(error))
       return res.status(201).json({
         message: "Tạo tài khoản thành công, kiểm tra mail để xác thực tài khoản",
       });

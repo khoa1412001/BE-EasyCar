@@ -14,9 +14,7 @@ function generateToken(id, role) {
 }
 function generateMailToken(email) {
   payload = { email: email };
-  const token = jwt.sign(payload, process.env.MAIL_VALIDATE_KEY, {
-    expiresIn: "30m",
-  });
+  const token = jwt.sign(payload, process.env.MAIL_VALIDATE_KEY);
   return token;
 }
 
