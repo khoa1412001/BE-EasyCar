@@ -37,7 +37,7 @@ const AuthController = {
     var newUser = new User(req.body);
     try {
       newUser.password = bcrypt.hashSync(req.body.password, 10);
-      // await newUser.save();
+      await newUser.save();
       const subject = "Kích hoạt tài khoản";
       const token = jwtService.generateMailToken(newUser.email);
       var context =
