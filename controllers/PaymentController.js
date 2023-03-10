@@ -151,7 +151,7 @@ const PaymentController = {
           console.log(vehicleRentalId)
           if(resultCode === 0){
               // write data to request body
-              const vehiclehistory = await VehicleRentalHistory.findOneAndUpdate({vehicleRentalId},{status:true},{new:true})
+              const vehiclehistory = await VehicleRentalHistory.findByIdAndUpdate(vehicleRentalId,{status:true},{new:true})
               const vehicle = await Vehicle.findById(vehiclehistory.vehicleId);
               const user = await User.findById(vehicle.ownerId)
               const balance = user.balance + vehiclehistory.totalPrice;
