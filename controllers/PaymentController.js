@@ -58,12 +58,10 @@ const PaymentController = {
         var orderInfo = "Thanh toán hoá đơn #" + orderId;
         var redirectUrl = frontendUrl + "profile/history";
         var ipnUrl = backendUrl + "api/payment/result-payment";
-        //var ipnUrl ='https://playerhostedapitest.herokuapp.com/api/myorders';
-        // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
         var requestType = "captureWallet"
         const rentalhistory = await VehicleRentalHistory.findById(req.body.recordId)
         var amount = rentalhistory.totalPrice
-        var extraData = Buffer.from(JSON.stringify({rentalhistory})).toString('base64');
+        var extraData = Buffer.from(JSON.stringify(rentalhistory._id)).toString('base64');
         //before sign HMAC SHA256 with format
         //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
         var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType
