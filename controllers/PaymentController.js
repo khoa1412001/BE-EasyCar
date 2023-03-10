@@ -146,7 +146,7 @@ const PaymentController = {
           var orderId = req.body.orderId || req.query.orderId;
           var extraData = req.body.extraData;
           var amount = req.body.amount;
-          var vehicleRentalId = JSON.parse(Buffer.from(extraData,'base64').toString('ascii'))._id;
+          var vehicleRentalId = JSON.parse(Buffer.from(extraData,'base64').toString('ascii'));
           var statusPayment = resultCode === 0 ? "Thành công":"Thất bại"
           console.log(vehicleRentalId)
           if(resultCode === 0){
