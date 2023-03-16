@@ -164,15 +164,18 @@ const RentalController = {
   },
   RateRentalVehicle: async (req, res) => {
     try {
+      //thêm rating và comment
       const rental = await VehicleRentalHistory.findOne({
         _id: req.params.id,
         userId: req.user.userId,
       });
-      if (!rental) return ErrorMsgPayload(res,"Không tìm thấy lịch sử thuê xe");
+      if (!rental) return ErrorMsgPayload(res, "Không tìm thấy lịch sử thuê xe");
+
       rental.rating = req.body.rating;
+      rental.comment = req.body.comment;
       const vehicleId = rental.vehicleId;
       await rental.save();
-
+      //tính trung bình rating
       const totalRating = await VehicleRentalHistory.find({
         vehicleId: vehicleId,
         rating: { $ne: 0 },

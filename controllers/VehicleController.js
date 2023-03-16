@@ -1,6 +1,7 @@
 const Vehicle = require("../models/Vehicle");
 const VehicleRegister = require("../models/VehicleRegister");
 const VehicleStatus = require("../models/VehicleStatus");
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const { getVehicleBrand, getVehicleModel } = require("../models/VehicleModel");
 const { uploadArray } = require("../utils/Cloudinary");
 const carStatusList = require("../configs/CarStatus");
@@ -54,6 +55,24 @@ const VehicleController = {
     } catch (error) {
       console.log(error.message);
       return res.status(400).json({ message: "Lỗi hệ thống" });
+    }
+  },
+  GetRateVehicle: async (req, res) => {
+    try {
+      const vehicleId = req.params.id;
+      const data = await VehicleRentalHistory.find({
+        vehicleId: vehicleId,
+        rating: { $ne: 0 },
+      })
+        .select("rating comment")
+        .populate({
+          path: "userId",
+          select: "username avatar -_id",
+        })
+        .lean();
+      return SuccessDataPayload(res, data);
+    } catch (error) {
+      return ErrorPayload(res, error);
     }
   },
 };
