@@ -27,6 +27,9 @@ const VehicleRentalHistorySchema = new Schema({
     type: Number,
     default: 0,
   },
+  comment: {
+    type: String,
+  },
   insurance: {
     type: Number,
   },
@@ -50,7 +53,9 @@ const VehicleRentalHistorySchema = new Schema({
     type: Boolean,
     default: false,
   },
-});
+  },
+  { timestamps: true }
+);
 module.exports = mongoose.model(
   "VehicleRentalHistory",
   VehicleRentalHistorySchema

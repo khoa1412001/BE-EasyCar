@@ -64,7 +64,7 @@ const VehicleController = {
         vehicleId: vehicleId,
         rating: { $ne: 0 },
       })
-        .select("rating comment")
+        .select("rating comment createdAt")
         .populate({
           path: "userId",
           select: "username avatar -_id",
