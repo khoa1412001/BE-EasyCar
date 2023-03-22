@@ -93,7 +93,7 @@ const UserController = {
       ).lean();
       return res.status(200).json({ data: user });
     } catch (error) {
-      ErrorPayload(res, error);
+      return ErrorPayload(res, error);
     }
   },
 };
