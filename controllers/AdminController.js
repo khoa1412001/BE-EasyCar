@@ -14,6 +14,7 @@ const {
   SuccessDataPayload,
   SuccessMsgPayload,
 } = require("../payloads");
+const Report = require("../models/Report");
 
 const AdminController = {
   //user
@@ -46,7 +47,7 @@ const AdminController = {
       if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
       return SuccessDataPayload(res, user);
     } catch (error) {
-      return ErrorPayload(res,error);
+      return ErrorPayload(res, error);
     }
   },
   SuspendUser: async (req, res) => {
@@ -92,7 +93,9 @@ const AdminController = {
         totalPage = Math.ceil(totalRequest / perPage);
       }
       const data = await Vehicle.find()
-        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats status")
+        .select(
+          "licenseplate brand model year fueltype fuelconsumption transmission type seats status"
+        )
         .populate("ownerId", "email username phoneNumber")
         .skip(perPage * (page - 1))
         .limit(perPage)
@@ -143,10 +146,9 @@ const AdminController = {
   GetDetailVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const result = await Vehicle.findById(vehicleId).populate(
-        "ownerId",
-        "username email phoneNumber gender location"
-      ).lean();
+      const result = await Vehicle.findById(vehicleId)
+        .populate("ownerId", "username email phoneNumber gender location")
+        .lean();
       if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
       return SuccessDataPayload(res, result);
     } catch (error) {
@@ -337,5 +339,26 @@ const AdminController = {
       return ErrorPayload(res, error);
     }
   },
+  //report
+  GetReportList: async (req, res) => {
+    try {
+      const perPage = 3;
+      const page = req.query.page || 1;
+      var totalPage = 0;
+      if (page == 1) {
+        let totalRequest = await Report.countDocuments({ status: false });
+        totalPage = Math.ceil(totalRequest / perPage);
+      }
+      const result = await Report.find({ status: false })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean();
+      return SuccessDataPayload(res, result);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  AcceptReport: async (req, res) => {},
+  DenyReport: async (req, res) => {},
 };
 module.exports = AdminController;
