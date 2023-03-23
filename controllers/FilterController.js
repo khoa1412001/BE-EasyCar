@@ -54,7 +54,7 @@ async function GetVehicleWithFilter(req, res) {
     // console.log(totalVehicle);
     let results = await Vehicle.find(
       filter,
-      "brand model fueltype transmission seats rating modelimage rentprice location latitude longitude"
+      "brand model fueltype transmission seats rating modelimage rentprice location latitude longitude year vehicleimage"
     ).populate("ownerId", "location")
     .lean();
     results = results.filter((item) => {
