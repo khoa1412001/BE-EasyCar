@@ -44,7 +44,7 @@ const RentalController = {
       })
         .populate({
           path: "vehicleId",
-          select: "brand model fueltype transmission seats modelimage rating",
+          select: "brand model fueltype transmission seats modelimage rating vehicleimage year",
           options: { withDeleted: true },
           populate: {
             path: "ownerId",
