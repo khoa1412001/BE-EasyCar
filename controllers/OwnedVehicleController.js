@@ -14,7 +14,7 @@ const OwnedVehicleController = {
     try {
       const ownedVehicle = await Vehicle.find(
         { ownerId: req.user.userId },
-        "brand model fueltype transmission seats rating modelimage rentprice status"
+        "brand model fueltype transmission seats rating modelimage rentprice status year vehicleimage"
       )
         .populate("ownerId", "location")
         .lean();
