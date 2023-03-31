@@ -16,7 +16,7 @@ const ReportController = {
         userId: req.user.userId,
       })
         .select("vehicleId")
-        .populate("vehicleId", "brand model licenseplate")
+        .populate("vehicleId", "brand model licenseplate year")
         .lean();
       return SuccessDataPayload(res, reportData);
     } catch (error) {
