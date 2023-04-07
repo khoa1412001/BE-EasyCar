@@ -346,19 +346,47 @@ const AdminController = {
       const page = req.query.page || 1;
       var totalPage = 0;
       if (page == 1) {
-        let totalRequest = await Report.countDocuments({ status: false });
-        totalPage = Math.ceil(totalRequest / perPage);
+        let totalRepost = await Report.countDocuments({ status: false });
+        totalPage = Math.ceil(totalRepost / perPage);
       }
       const result = await Report.find({ status: false })
+        .populate("userId", "email username phoneNumber")
+        .populate({
+          path: "vehicleId",
+          select: "brand model licenseplate year",
+          populate: { path: "ownerId", select: "email username phoneNumber" },
+        })
         .skip(perPage * (page - 1))
         .limit(perPage)
         .lean();
-      return SuccessDataPayload(res, result);
+      return SuccessDataPayload(res, {
+        totalPage: totalPage,
+        data: result,
+      });
     } catch (error) {
       return ErrorPayload(res, error);
     }
   },
-  AcceptReport: async (req, res) => {},
-  DenyReport: async (req, res) => {},
+  AcceptReport: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const report = await Report.findById(id);
+      report.status = true;
+      await report.save();
+      return SuccessMsgPayload(res, "Chấp nhận thành công!!!");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  DenyReport: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const report = await Report.findById(id);
+      await report.delete();
+      return SuccessMsgPayload(res, "Từ chối thành công!!!");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
 };
 module.exports = AdminController;

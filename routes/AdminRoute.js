@@ -28,5 +28,7 @@ router.post("/deny-withdraw/:id", adminController.DenyWithdraw);
 router.post("/accept-withdraw/:id", adminController.AcceptWithdraw);
 
 router.get("/report-list", adminController.GetReportList);
+router.post("/accept-report/:id", adminController.AcceptReport);
+router.post("/accept-report/:id", adminController.DenyReport);
 
 module.exports = router;
