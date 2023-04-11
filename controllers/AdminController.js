@@ -381,9 +381,17 @@ const AdminController = {
   DenyReport: async (req, res) => {
     try {
       const id = req.params.id;
-      const report = await Report.findById(id);
-      await report.delete();
+      await Report.findByIdAndDelete(id);
       return SuccessMsgPayload(res, "Từ chối thành công!!!");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  ReportDetail: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const report = await Report.findById(id).lean();
+      return SuccessDataPayload(res, report);
     } catch (error) {
       return ErrorPayload(res, error);
     }
