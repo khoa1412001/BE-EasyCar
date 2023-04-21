@@ -28,7 +28,9 @@ const AdminController = {
         totalPage = Math.ceil(totalUser / perPage);
       }
       const data = await User.find({ role: roleList.CUSTOMER })
-        .select("email username phoneNumber location status verification avatar")
+        .select(
+          "email username phoneNumber location status verification avatar"
+        )
         .skip(perPage * (page - 1))
         .limit(perPage)
         .lean();
@@ -43,7 +45,9 @@ const AdminController = {
   },
   GetDetailUser: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id).select("-password").lean();
+      const user = await User.findById(req.params.id)
+        .select("-password")
+        .lean();
       if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
       return SuccessDataPayload(res, user);
     } catch (error) {
@@ -112,7 +116,8 @@ const AdminController = {
       const vehicle = await Vehicle.findOne({
         _id: vehicleId,
       });
-      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+      if (vehicle === null)
+        return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
@@ -138,7 +143,9 @@ const AdminController = {
       if (!vehicle) return ErrorMsgPayload(res, "Không tìm thấy xe");
       vehicle.status = carStatusList.ALLOW;
       await vehicle.save();
-      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
+      return res
+        .status(200)
+        .json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       return ErrorPayload(res, error);
     }
@@ -162,11 +169,15 @@ const AdminController = {
     var totalPage = 0;
     try {
       if (page == 1) {
-        let totalRequest = await VehicleRegister.countDocuments({ status: statusList.PENDING });
+        let totalRequest = await VehicleRegister.countDocuments({
+          status: statusList.PENDING,
+        });
         totalPage = Math.ceil(totalRequest / perPage);
       }
       const data = await VehicleRegister.find({ status: statusList.PENDING })
-        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats")
+        .select(
+          "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+        )
         .populate("ownerId", "email username phoneNumber")
         .skip(perPage * (page - 1))
         .limit(perPage)
@@ -235,7 +246,9 @@ const AdminController = {
         });
         totalPage = Math.ceil(totalRequest / perPage);
       }
-      const data = await UserVerificationRequest.find({ status: statusList.PENDING })
+      const data = await UserVerificationRequest.find({
+        status: statusList.PENDING,
+      })
         .select("username driverLicenseNumber bod")
         .populate("userId", "avatar email phoneNumber location")
         .skip(perPage * (page - 1))
@@ -252,8 +265,11 @@ const AdminController = {
   },
   GetVerificationDetail: async (req, res) => {
     try {
-      const result = await UserVerificationRequest.findById(req.params.id).lean();
-      if (!result) return ErrorMsgPayload(res, "Không tìm thấy yêu cầu xác thực");
+      const result = await UserVerificationRequest.findById(
+        req.params.id
+      ).lean();
+      if (!result)
+        return ErrorMsgPayload(res, "Không tìm thấy yêu cầu xác thực");
       return SuccessDataPayload(res, result);
     } catch (error) {
       return ErrorPayload(res, error);
@@ -262,7 +278,8 @@ const AdminController = {
   DenyVerification: async (req, res) => {
     try {
       const item = await UserVerificationRequest.findById(req.params.id);
-      if (!item) return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
+      if (!item)
+        return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
       item.status = statusList.DECLINE;
       await item.delete();
       return SuccessMsgPayload(res, "Từ chối xác thực người dùng thành công");
@@ -272,7 +289,9 @@ const AdminController = {
   },
   AcceptVerification: async (req, res) => {
     try {
-      const verification = await UserVerificationRequest.findById(req.params.id);
+      const verification = await UserVerificationRequest.findById(
+        req.params.id
+      );
       const user = await User.findById(verification.userId);
       user.fullname = verification.username;
       user.driverLicenseImg = verification.driverLicenseImg;
@@ -292,19 +311,40 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    var status = req.body.option.find((item) => item.selected);
+    var data = [];
     try {
       if (page == 1) {
-        let totalRequest = await WithdrawRequest.countDocuments();
-        totalPage = Math.ceil(totalRequest / perPage);
+        if (status.value === "ALL") {
+          let totalRequest = await WithdrawRequest.countDocuments();
+          totalPage = Math.ceil(totalRequest / perPage);
+        } else {
+          let totalRequest = await WithdrawRequest.countDocuments({
+            status: status.value,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
       }
-      const data = await WithdrawRequest.find()
-        .populate(
-          "userId",
-          "avatar email username bank banknumber bankaccountname phoneNumber location"
-        )
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
+      if (status.value === "ALL") {
+        data = await WithdrawRequest.find()
+          .populate(
+            "userId",
+            "avatar email username bank banknumber bankaccountname phoneNumber location"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        data = await WithdrawRequest.find({ status: status.value })
+          .populate(
+            "userId",
+            "avatar email username bank banknumber bankaccountname phoneNumber location"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      }
+
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
@@ -345,20 +385,45 @@ const AdminController = {
       const perPage = 3;
       const page = req.query.page || 1;
       var totalPage = 0;
+      var status = req.body.option.find((item) => item.selected);
+      var result = [];
+
       if (page == 1) {
-        let totalRepost = await Report.countDocuments({ status: false });
-        totalPage = Math.ceil(totalRepost / perPage);
+        if (status.value === "ALL") {
+          let totalRepost = await Report.countDocuments({});
+          totalPage = Math.ceil(totalRepost / perPage);
+        } else {
+          let totalRepost = await Report.countDocuments({
+            status: status.value,
+          });
+          totalPage = Math.ceil(totalRepost / perPage);
+        }
       }
-      const result = await Report.find({ status: false })
-        .populate("userId", "email username phoneNumber")
-        .populate({
-          path: "vehicleId",
-          select: "brand model licenseplate year",
-          populate: { path: "ownerId", select: "email username phoneNumber" },
-        })
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
+
+      if (status.value === "ALL") {
+        result = await Report.find({})
+          .populate("userId", "email username phoneNumber")
+          .populate({
+            path: "vehicleId",
+            select: "brand model licenseplate year",
+            populate: { path: "ownerId", select: "email username phoneNumber" },
+          })
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        result = await Report.find({ status: status.value })
+          .populate("userId", "email username phoneNumber")
+          .populate({
+            path: "vehicleId",
+            select: "brand model licenseplate year",
+            populate: { path: "ownerId", select: "email username phoneNumber" },
+          })
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      }
+
       return SuccessDataPayload(res, {
         totalPage: totalPage,
         data: result,

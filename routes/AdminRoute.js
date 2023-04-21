@@ -23,11 +23,11 @@ router.delete("/delete-vehicle/:id", adminController.DeleteVehicle);
 router.post("/postpone-vehicle/:id", adminController.PostponeVehicle);
 router.post("/resume-vehicle/:id", adminController.ResumeVehicle);
 
-router.get("/withdraw-list", adminController.GetWithdrawList);
+router.post("/withdraw-list", adminController.GetWithdrawList);
 router.post("/deny-withdraw/:id", adminController.DenyWithdraw);
 router.post("/accept-withdraw/:id", adminController.AcceptWithdraw);
 
-router.get("/report-list", adminController.GetReportList);
+router.post("/report-list", adminController.GetReportList);
 router.get("/report-detail/:id", adminController.ReportDetail);
 router.post("/accept-report/:id", adminController.AcceptReport);
 router.post("/deny-report/:id", adminController.DenyReport);
