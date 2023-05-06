@@ -156,5 +156,69 @@ const OwnedVehicleController = {
       return ErrorPayload(res, error);
     }
   },
+  GetVehicleDetail: async (req, res) => {
+    try {
+      const ownedVehicle = await Vehicle.findById(
+        req.params.id,
+        "description rentterm vehicleimage rentprice"
+      )
+        .populate("ownerId", "location")
+        .lean();
+      return SuccessDataPayload(res, ownedVehicle);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+
+  UpdateRentPrice: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+        ownerId: req.user.userId,
+      });
+      if (!vehicle) ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.rentprice = req.body.rentprice
+      await vehicle.save();
+      return res.status(200).json({ message: "Cập nhật giá thuê xe thành công" });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+
+  UpdateTermAndDescription: async (req, res) => {
+    const vehicleId = req.params.id;
+    try {
+      const vehicle = await Vehicle.findOne({
+        _id: vehicleId,
+        ownerId: req.user.userId,
+      });
+      if (!vehicle) ErrorMsgPayload(res, "Không tìm thấy xe");
+      vehicle.rentterm = req.body.rentterm;
+      vehicle.description = req.body.description;
+      await vehicle.save();
+      return res.status(200).json({ message: "Cập nhật giá thuê xe thành công" });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+
+  UpdateImage: async (req, res) => {
+    try {
+      const { order, id } = req.body;
+      const vehicle = await Vehicle.findOne({
+        _id: id,
+        ownerId: req.user.userId,
+      });
+      const uploadResult = await uploadArray(req.files);
+      order.forEach((value, index, array) => {
+        vehicle.vehicleimage[value - 1] = uploadResult[index].secure_url
+      })
+      await vehicle.save();
+      return SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
 };
 module.exports = OwnedVehicleController;

@@ -16,4 +16,8 @@ router.post(
   ownedVehicleController.UpdateVehicleStatus
 );
 router.get("/info/:id", ownedVehicleController.GetDetailForStatusUpdate);
+router.get("/detail-vehical/:id", ownedVehicleController.GetVehicleDetail);
+router.post("/update-price/:id",ownedVehicleController.UpdateRentPrice);
+router.post("/update-infor/:id",ownedVehicleController.UpdateTermAndDescription);
+router.post("/update-image/",parser.array("vehicleimage"),ownedVehicleController.UpdateImage);
 module.exports = router;
