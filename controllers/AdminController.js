@@ -22,18 +22,54 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalUser = await User.countDocuments({ role: roleList.CUSTOMER });
-        totalPage = Math.ceil(totalUser / perPage);
+      if(query === "") {
+        if (page == 1) {
+          let totalUser = await User.countDocuments({ role: roleList.CUSTOMER });
+          totalPage = Math.ceil(totalUser / perPage);
+        }
+        data = await User.find({ 
+          role: roleList.CUSTOMER, 
+        })
+          .select(
+            "email username phoneNumber location status verification avatar"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalUser = await User.countDocuments({
+            role: roleList.CUSTOMER ,
+            $or:[
+              {username: { "$regex": query, "$options": "i" }},
+              {fullname: { "$regex": query, "$options": "i" }},
+              {email: { "$regex": query, "$options": "i" }, },
+              {phoneNumber: { "$regex": query, "$options": "i" }},
+              {location: { "$regex": query, "$options": "i" }},
+            ]
+        });
+          totalPage = Math.ceil(totalUser / perPage);
+        }
+        data = await User.find({ 
+          role: roleList.CUSTOMER, 
+          $or:[
+            {username: { "$regex": query, "$options": "i" }},
+            {fullname: { "$regex": query, "$options": "i" }},
+            {email: { "$regex": query, "$options": "i" }, },
+            {phoneNumber: { "$regex": query, "$options": "i" }},
+            {location: { "$regex": query, "$options": "i" }},
+          ]
+        })
+          .select(
+            "email username phoneNumber location status verification avatar"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean().exec();
       }
-      const data = await User.find({ role: roleList.CUSTOMER })
-        .select(
-          "email username phoneNumber location status verification avatar"
-        )
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
@@ -91,12 +127,15 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalRequest = await Vehicle.countDocuments();
-        totalPage = Math.ceil(totalRequest / perPage);
-      }
-      const data = await Vehicle.find()
+      if(query === "") {
+        if (page == 1) {
+          let totalRequest = await Vehicle.countDocuments();
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await Vehicle.find()
         .select(
           "licenseplate brand model year fueltype fuelconsumption transmission type seats status"
         )
@@ -104,6 +143,37 @@ const AdminController = {
         .skip(perPage * (page - 1))
         .limit(perPage)
         .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await Vehicle.countDocuments({
+            $or:[
+              {brand: { "$regex": query, "$options": "i" }},
+              {model: { "$regex": query, "$options": "i" }},
+              {type: { "$regex": query, "$options": "i" }, },
+              {year: { "$regex": query, "$options": "i" }},
+              {licenseplate: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await Vehicle.find({
+          $or:[
+            {brand: { "$regex": query, "$options": "i" }},
+            {model: { "$regex": query, "$options": "i" }},
+            {type: { "$regex": query, "$options": "i" }, },
+            {year: { "$regex": query, "$options": "i" }},
+            {licenseplate: { "$regex": query, "$options": "i" }},
+          ]
+        })
+        .select(
+          "licenseplate brand model year fueltype fuelconsumption transmission type seats status"
+        )
+        .populate("ownerId", "email username phoneNumber")
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean();
+      }
+      
       return res.status(200).json({ totalPage: totalPage, data: data });
     } catch (error) {
       console.log(error.message);
@@ -167,21 +237,56 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalRequest = await VehicleRegister.countDocuments({
+      if(query === ""){
+        if (page == 1) {
+          let totalRequest = await VehicleRegister.countDocuments({
+            status: statusList.PENDING,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await VehicleRegister.find({ status: statusList.PENDING })
+          .select(
+            "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+          )
+          .populate("ownerId", "email username phoneNumber")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await VehicleRegister.countDocuments({
+            status: statusList.PENDING,
+            $or:[
+              {brand: { "$regex": query, "$options": "i" }},
+              {model: { "$regex": query, "$options": "i" }},
+              {type: { "$regex": query, "$options": "i" }, },
+              {year: { "$regex": query, "$options": "i" }},
+              {licenseplate: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await VehicleRegister.find({ 
           status: statusList.PENDING,
-        });
-        totalPage = Math.ceil(totalRequest / perPage);
+          $or:[
+            {brand: { "$regex": query, "$options": "i" }},
+            {model: { "$regex": query, "$options": "i" }},
+            {type: { "$regex": query, "$options": "i" }, },
+            {year: { "$regex": query, "$options": "i" }},
+            {licenseplate: { "$regex": query, "$options": "i" }},
+          ]
+         })
+          .select(
+            "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+          )
+          .populate("ownerId", "email username phoneNumber")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
       }
-      const data = await VehicleRegister.find({ status: statusList.PENDING })
-        .select(
-          "licenseplate brand model year fueltype fuelconsumption transmission type seats"
-        )
-        .populate("ownerId", "email username phoneNumber")
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({ totalPage: totalPage, data: data });
     } catch (error) {
       console.log(error.message);
@@ -239,21 +344,49 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    var data = [];
+    const query = req.body.query;
     try {
-      if (page == 1) {
-        let totalRequest = await UserVerificationRequest.countDocuments({
+      if(query === "") {
+        if (page == 1) {
+          let totalRequest = await UserVerificationRequest.countDocuments({
+            status: statusList.PENDING,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+
+        data = await UserVerificationRequest.find({
           status: statusList.PENDING,
-        });
-        totalPage = Math.ceil(totalRequest / perPage);
+        })
+          .select("username driverLicenseNumber bod")
+          .populate("userId", "avatar email phoneNumber location")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await UserVerificationRequest.countDocuments({
+            status: statusList.PENDING,
+            $or:[
+              {username: { "$regex": query, "$options": "i" }},
+              {driverLicenseNumber: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await UserVerificationRequest.find({
+          status: statusList.PENDING,
+          $or:[
+            {username: { "$regex": query, "$options": "i" }},
+            {driverLicenseNumber: { "$regex": query, "$options": "i" }},
+          ]
+        })
+          .select("username driverLicenseNumber bod")
+          .populate("userId", "avatar email phoneNumber location")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
       }
-      const data = await UserVerificationRequest.find({
-        status: statusList.PENDING,
-      })
-        .select("username driverLicenseNumber bod")
-        .populate("userId", "avatar email phoneNumber location")
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
