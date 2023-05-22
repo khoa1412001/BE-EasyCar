@@ -75,5 +75,34 @@ const VehicleController = {
       return ErrorPayload(res, error);
     }
   },
+
+  GetRecommendation: async (req, res) => {
+    let startDate = new Date(Number(req.query.startdate) * 1000);
+    let endDate = new Date(Number(req.query.enddate) * 1000);
+    const oneDay = 1000 * 60 * 60 * 24;
+    let diffInTime = endDate.getTime() - startDate.getTime();
+    let days = Math.ceil(diffInTime / oneDay);
+    try {
+      const vehicleId = req.params.id;
+      const cardata = await Vehicle.findById(vehicleId).lean();
+      var data = [];
+      const getCarType = cardata.type;
+      const recommendationdata = await Vehicle.find({type: getCarType, _id: {$ne: cardata._id}}).sort('rating').lean();
+      const remain = 10 - recommendationdata.length;
+      data = recommendationdata;
+      if(remain >= 0 ) {
+        const filler = await Vehicle.find({type:{$ne:getCarType}, _id: {$ne: cardata._id}}).sort('rating').limit(remain).lean();
+        data = recommendationdata.concat(filler);
+      }
+      data.map((result) => {
+        result.totalprice = Math.round(result.rentprice * 1.1 * days);
+        result.basicinsurance = Math.round(result.totalprice * 0.085);
+        result.totalprice = Math.round(result.totalprice + result.basicinsurance);
+      });
+      return SuccessDataPayload(res, data);
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
 };
 module.exports = VehicleController;
