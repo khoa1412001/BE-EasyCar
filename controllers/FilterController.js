@@ -1,6 +1,9 @@
 const carStatusList = require("../configs/CarStatus");
 const Vehicle = require("../models/Vehicle");
+const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const haversine = require("haversine");
+const { ErrorPayload, SuccessDataPayload } = require("../payloads");
+const moment = require("moment/moment");
 
 async function GetVehicleWithFilter(req, res) {
   // let perPage = 10; //10
@@ -23,13 +26,13 @@ async function GetVehicleWithFilter(req, res) {
         filter.rentprice = { $lt: 1000 };
         break;
       case "2M":
-        filter.rentprice = { $lt: 2000, $gte: 1000 };
+        filter.rentprice = { $lt: 2000 };
         break;
       case "3M":
-        filter.rentprice = { $lt: 3000, $gte: 2000 };
+        filter.rentprice = { $lt: 3000 };
         break;
       case "4M":
-        filter.rentprice = { $gte: 1000 };
+        filter.rentprice = { $lt: 4000 };
         break;
       default:
         break;
@@ -55,8 +58,9 @@ async function GetVehicleWithFilter(req, res) {
     let results = await Vehicle.find(
       filter,
       "brand model fueltype transmission seats rating modelimage rentprice location latitude longitude year vehicleimage"
-    ).populate("ownerId", "location")
-    .lean();
+    )
+      .populate("ownerId", "location")
+      .lean();
     results = results.filter((item) => {
       var endPoint = ({ longitude, latitude } = item);
       return haversine(startPoint, endPoint, { threshold: 3, unit: "km" });
@@ -75,4 +79,54 @@ async function GetVehicleWithFilter(req, res) {
   }
 }
 
-module.exports = { GetVehicleWithFilter };
+async function TextFilter(req, res) {
+  try {
+    const requireList = req.query.q.split(",");
+    var [priceFrom, priceTo] = requireList[0].split("-").map((item) => parseInt(item, 10) * 1000);
+    var [rentalDateStart, rentalDateEnd] = requireList[1]
+      .split("-")
+      .map((item) => moment(item, "DD/MM/YYYY").toDate());
+    var seat = parseInt(requireList[2], 10);
+    var engine = requireList[3].replaceAll(/\s/g, "");
+    let result = await Vehicle.find({
+      seats: { $gte: seat },
+      transmission: engine,
+      rentprice: { $lte: priceTo, $gte: priceFrom },
+    }).lean();
+    var validResult = [];
+    var i = 0;
+    while (true) {
+      if (validResult.length == 5 || i == result.length) break;
+      const historyList = await VehicleRentalHistory.find({
+        vehicleId: result[i]._id,
+        $and: [{ rentalDateEnd: { $gt: Date.now() } }, { rentalDateStart: { $gt: Date.now() } }],
+      }).lean();
+      var checkResult = historyList.every(
+        (item) => rentalDateEnd < item.rentalDateStart || rentalDateStart > item.rentalDateEnd
+      );
+      if (checkResult)
+        validResult.push({
+          name: `${result[i].brand} ${result[i].model}`,
+          link:
+            process.env.FE_URL ||
+            "http://localhost:5000" +
+              `/details?id=${result[i]._id}&startdate=${rentalDateStart.getTime() / 1000}&enddate=${
+                rentalDateEnd.getTime() / 1000
+              }`,
+        });
+      i++;
+    }
+    return SuccessDataPayload(res, validResult);
+  } catch (error) {
+    return ErrorPayload(res, error);
+  }
+}
+// 500 - 1000, 24/02/2023 - 25/02/2023, 4, AUTO
+// 500 - 1000, 24/02/2023 - 25/02/2023, 4, MANUAL
+// Những xe phù hợp yêu cầu
+// HUYNDAI ACCENT
+// FE_URL/details?id={id}&startdate={startdate.unix()}&enddate={enddate.unix()}
+
+// Không có xe phù hợp yêu cầu
+
+module.exports = { GetVehicleWithFilter, TextFilter };
