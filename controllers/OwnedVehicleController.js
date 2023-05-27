@@ -211,9 +211,14 @@ const OwnedVehicleController = {
         ownerId: req.user.userId,
       });
       const uploadResult = await uploadArray(req.files);
-      order.forEach((value, index, array) => {
-        vehicle.vehicleimage[value - 1] = uploadResult[index].secure_url
-      })
+      if(Array.isArray(order)){
+        order.forEach((value, index, array) => {
+          vehicle.vehicleimage[value - 1] = uploadResult[index].secure_url
+        })
+      }
+      else {
+        vehicle.vehicleimage[order - 1] = uploadResult[0].secure_url
+      }
       await vehicle.save();
       return SuccessMsgPayload(res, "Cập nhật trạng thái xe thành công");
     } catch (error) {
