@@ -4,7 +4,7 @@ const VehicleRentalHistory = require("../models/VehicleRentalHistory");
 const haversine = require("haversine");
 const { ErrorPayload, SuccessDataPayload } = require("../payloads");
 const moment = require("moment/moment");
-
+const axios = require("axios");
 async function GetVehicleWithFilter(req, res) {
   // let perPage = 10; //10
   // let page = Number(req.body.page) || 1;
@@ -129,4 +129,39 @@ async function TextFilter(req, res) {
 
 // Không có xe phù hợp yêu cầu
 
-module.exports = { GetVehicleWithFilter, TextFilter };
+async function ElasticSearch(req, res) {
+  let startDate = new Date(Number(req.query.startdate) * 1000);
+  let endDate = new Date(Number(req.query.enddate) * 1000);
+  const oneDay = 1000 * 60 * 60 * 24;
+  const diffInTime = endDate.getTime() - startDate.getTime();
+  const days = Math.ceil(diffInTime / oneDay);
+  const query = req.query.query;
+  var result = [];
+  try {
+    axios
+    .get(
+      process.env.ELASTIC_URI+encodeURIComponent(query)
+    )
+    .then((response) => {
+      response.data.hits.hits.map(item => {
+        result.push(item._source)
+      })
+      result.map((result) => {
+        result.totalprice = Math.round(result.rentprice * 1.1 * days);
+        result.basicinsurance = Math.round(result.totalprice * 0.085);
+        result.totalprice = Math.round(result.totalprice + result.basicinsurance);
+      });
+      console.log(result)
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(400).json("Lỗi máy chủ, vui lòng thử lại sau");
+    });
+
+  } catch (error) {
+    return ErrorPayload(res, error);
+  }
+}
+
+module.exports = { GetVehicleWithFilter, TextFilter, ElasticSearch };
