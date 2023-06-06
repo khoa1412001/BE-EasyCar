@@ -93,23 +93,28 @@ async function TextFilter(req, res) {
       transmission: engine,
       rentprice: { $lte: priceTo, $gte: priceFrom },
     }).lean();
+
     var validResult = [];
     var i = 0;
+
     while (true) {
       if (validResult.length == 5 || i == result.length) break;
+
       const historyList = await VehicleRentalHistory.find({
         vehicleId: result[i]._id,
         $and: [{ rentalDateEnd: { $gt: Date.now() } }, { rentalDateStart: { $gt: Date.now() } }],
       }).lean();
+
       var checkResult = historyList.every(
         (item) => rentalDateEnd < item.rentalDateStart || rentalDateStart > item.rentalDateEnd
       );
+
       if (checkResult)
         validResult.push({
           name: `${result[i].brand} ${result[i].model}`,
           link:
             process.env.FE_URL ||
-            "http://localhost:5000" +
+            "http://localhost:3000" +
               `/details?id=${result[i]._id}&startdate=${rentalDateStart.getTime() / 1000}&enddate=${
                 rentalDateEnd.getTime() / 1000
               }`,
