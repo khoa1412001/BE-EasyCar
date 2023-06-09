@@ -16,7 +16,7 @@ const RentalController = {
       const rentalDateStart = new Date(Number(req.body.rentalDateStart) * 1000);
       const historyList = await VehicleRentalHistory.find({
         vehicleId: req.body.vehicleId,
-        $or: [{ rentalDateEnd: { $gt: Date.now() } }, { rentalDateStart: { $gt: Date.now() } }],
+        $and: [{ rentalDateEnd: { $gt: Date.now() } }, { rentalDateStart: { $gt: Date.now() } }],
       }).lean();
       const checkResult = historyList.every(
         (item) => rentalDateEnd < item.rentalDateStart || rentalDateStart > item.rentalDateEnd

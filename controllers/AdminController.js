@@ -14,6 +14,7 @@ const {
   SuccessDataPayload,
   SuccessMsgPayload,
 } = require("../payloads");
+const Report = require("../models/Report");
 
 const AdminController = {
   //user
@@ -21,16 +22,54 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalUser = await User.countDocuments({ role: roleList.CUSTOMER });
-        totalPage = Math.ceil(totalUser / perPage);
+      if(query === "") {
+        if (page == 1) {
+          let totalUser = await User.countDocuments({ role: roleList.CUSTOMER });
+          totalPage = Math.ceil(totalUser / perPage);
+        }
+        data = await User.find({ 
+          role: roleList.CUSTOMER, 
+        })
+          .select(
+            "email username phoneNumber location status verification avatar"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalUser = await User.countDocuments({
+            role: roleList.CUSTOMER ,
+            $or:[
+              {username: { "$regex": query, "$options": "i" }},
+              {fullname: { "$regex": query, "$options": "i" }},
+              {email: { "$regex": query, "$options": "i" }, },
+              {phoneNumber: { "$regex": query, "$options": "i" }},
+              {location: { "$regex": query, "$options": "i" }},
+            ]
+        });
+          totalPage = Math.ceil(totalUser / perPage);
+        }
+        data = await User.find({ 
+          role: roleList.CUSTOMER, 
+          $or:[
+            {username: { "$regex": query, "$options": "i" }},
+            {fullname: { "$regex": query, "$options": "i" }},
+            {email: { "$regex": query, "$options": "i" }, },
+            {phoneNumber: { "$regex": query, "$options": "i" }},
+            {location: { "$regex": query, "$options": "i" }},
+          ]
+        })
+          .select(
+            "email username phoneNumber location status verification avatar"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean().exec();
       }
-      const data = await User.find({ role: roleList.CUSTOMER })
-        .select("email username phoneNumber location status verification avatar")
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
@@ -42,11 +81,13 @@ const AdminController = {
   },
   GetDetailUser: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id).select("-password").lean();
+      const user = await User.findById(req.params.id)
+        .select("-password")
+        .lean();
       if (!user) return ErrorMsgPayload(res, "Không tìm thấy người dùng");
       return SuccessDataPayload(res, user);
     } catch (error) {
-      return ErrorPayload(res,error);
+      return ErrorPayload(res, error);
     }
   },
   SuspendUser: async (req, res) => {
@@ -86,17 +127,53 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalRequest = await Vehicle.countDocuments();
-        totalPage = Math.ceil(totalRequest / perPage);
-      }
-      const data = await Vehicle.find()
-        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats status")
+      if(query === "") {
+        if (page == 1) {
+          let totalRequest = await Vehicle.countDocuments();
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await Vehicle.find()
+        .select(
+          "licenseplate brand model year fueltype fuelconsumption transmission type seats status"
+        )
         .populate("ownerId", "email username phoneNumber")
         .skip(perPage * (page - 1))
         .limit(perPage)
         .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await Vehicle.countDocuments({
+            $or:[
+              {brand: { "$regex": query, "$options": "i" }},
+              {model: { "$regex": query, "$options": "i" }},
+              {type: { "$regex": query, "$options": "i" }, },
+              {year: { "$regex": query, "$options": "i" }},
+              {licenseplate: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await Vehicle.find({
+          $or:[
+            {brand: { "$regex": query, "$options": "i" }},
+            {model: { "$regex": query, "$options": "i" }},
+            {type: { "$regex": query, "$options": "i" }, },
+            {year: { "$regex": query, "$options": "i" }},
+            {licenseplate: { "$regex": query, "$options": "i" }},
+          ]
+        })
+        .select(
+          "licenseplate brand model year fueltype fuelconsumption transmission type seats status"
+        )
+        .populate("ownerId", "email username phoneNumber")
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean();
+      }
+      
       return res.status(200).json({ totalPage: totalPage, data: data });
     } catch (error) {
       console.log(error.message);
@@ -109,7 +186,8 @@ const AdminController = {
       const vehicle = await Vehicle.findOne({
         _id: vehicleId,
       });
-      if (vehicle === null) return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
+      if (vehicle === null)
+        return res.status(400).json({ message: "Không tìm thấy xe cần xóa" });
       await vehicle.delete();
       return res.status(200).json({ message: "Xóa xe thành công" });
     } catch (error) {
@@ -135,7 +213,9 @@ const AdminController = {
       if (!vehicle) return ErrorMsgPayload(res, "Không tìm thấy xe");
       vehicle.status = carStatusList.ALLOW;
       await vehicle.save();
-      return res.status(200).json({ message: "Tiếp tục cho thuê xe thành công" });
+      return res
+        .status(200)
+        .json({ message: "Tiếp tục cho thuê xe thành công" });
     } catch (error) {
       return ErrorPayload(res, error);
     }
@@ -143,10 +223,9 @@ const AdminController = {
   GetDetailVehicle: async (req, res) => {
     const vehicleId = req.params.id;
     try {
-      const result = await Vehicle.findById(vehicleId).populate(
-        "ownerId",
-        "username email phoneNumber gender location"
-      ).lean();
+      const result = await Vehicle.findById(vehicleId)
+        .populate("ownerId", "username email phoneNumber gender location")
+        .lean();
       if (!result) return ErrorMsgPayload(res, "Không tìm thấy xe");
       return SuccessDataPayload(res, result);
     } catch (error) {
@@ -158,17 +237,56 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    const query = req.body.query;
+    var data = [];
     try {
-      if (page == 1) {
-        let totalRequest = await VehicleRegister.countDocuments({ status: statusList.PENDING });
-        totalPage = Math.ceil(totalRequest / perPage);
+      if(query === ""){
+        if (page == 1) {
+          let totalRequest = await VehicleRegister.countDocuments({
+            status: statusList.PENDING,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await VehicleRegister.find({ status: statusList.PENDING })
+          .select(
+            "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+          )
+          .populate("ownerId", "email username phoneNumber")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await VehicleRegister.countDocuments({
+            status: statusList.PENDING,
+            $or:[
+              {brand: { "$regex": query, "$options": "i" }},
+              {model: { "$regex": query, "$options": "i" }},
+              {type: { "$regex": query, "$options": "i" }, },
+              {year: { "$regex": query, "$options": "i" }},
+              {licenseplate: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await VehicleRegister.find({ 
+          status: statusList.PENDING,
+          $or:[
+            {brand: { "$regex": query, "$options": "i" }},
+            {model: { "$regex": query, "$options": "i" }},
+            {type: { "$regex": query, "$options": "i" }, },
+            {year: { "$regex": query, "$options": "i" }},
+            {licenseplate: { "$regex": query, "$options": "i" }},
+          ]
+         })
+          .select(
+            "licenseplate brand model year fueltype fuelconsumption transmission type seats"
+          )
+          .populate("ownerId", "email username phoneNumber")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
       }
-      const data = await VehicleRegister.find({ status: statusList.PENDING })
-        .select("licenseplate brand model year fueltype fuelconsumption transmission type seats")
-        .populate("ownerId", "email username phoneNumber")
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({ totalPage: totalPage, data: data });
     } catch (error) {
       console.log(error.message);
@@ -226,19 +344,49 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    var data = [];
+    const query = req.body.query;
     try {
-      if (page == 1) {
-        let totalRequest = await UserVerificationRequest.countDocuments({
+      if(query === "") {
+        if (page == 1) {
+          let totalRequest = await UserVerificationRequest.countDocuments({
+            status: statusList.PENDING,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+
+        data = await UserVerificationRequest.find({
           status: statusList.PENDING,
-        });
-        totalPage = Math.ceil(totalRequest / perPage);
+        })
+          .select("username driverLicenseNumber bod")
+          .populate("userId", "avatar email phoneNumber location")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        if (page == 1) {
+          let totalRequest = await UserVerificationRequest.countDocuments({
+            status: statusList.PENDING,
+            $or:[
+              {username: { "$regex": query, "$options": "i" }},
+              {driverLicenseNumber: { "$regex": query, "$options": "i" }},
+            ]
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
+        data = await UserVerificationRequest.find({
+          status: statusList.PENDING,
+          $or:[
+            {username: { "$regex": query, "$options": "i" }},
+            {driverLicenseNumber: { "$regex": query, "$options": "i" }},
+          ]
+        })
+          .select("username driverLicenseNumber bod")
+          .populate("userId", "avatar email phoneNumber location")
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
       }
-      const data = await UserVerificationRequest.find({ status: statusList.PENDING })
-        .select("username driverLicenseNumber bod")
-        .populate("userId", "avatar email phoneNumber location")
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
@@ -250,8 +398,11 @@ const AdminController = {
   },
   GetVerificationDetail: async (req, res) => {
     try {
-      const result = await UserVerificationRequest.findById(req.params.id).lean();
-      if (!result) return ErrorMsgPayload(res, "Không tìm thấy yêu cầu xác thực");
+      const result = await UserVerificationRequest.findById(
+        req.params.id
+      ).lean();
+      if (!result)
+        return ErrorMsgPayload(res, "Không tìm thấy yêu cầu xác thực");
       return SuccessDataPayload(res, result);
     } catch (error) {
       return ErrorPayload(res, error);
@@ -260,7 +411,8 @@ const AdminController = {
   DenyVerification: async (req, res) => {
     try {
       const item = await UserVerificationRequest.findById(req.params.id);
-      if (!item) return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
+      if (!item)
+        return ErrorMsgPayload(res, "Không tìm thấy xác thực người dùng");
       item.status = statusList.DECLINE;
       await item.delete();
       return SuccessMsgPayload(res, "Từ chối xác thực người dùng thành công");
@@ -270,7 +422,9 @@ const AdminController = {
   },
   AcceptVerification: async (req, res) => {
     try {
-      const verification = await UserVerificationRequest.findById(req.params.id);
+      const verification = await UserVerificationRequest.findById(
+        req.params.id
+      );
       const user = await User.findById(verification.userId);
       user.fullname = verification.username;
       user.driverLicenseImg = verification.driverLicenseImg;
@@ -290,19 +444,40 @@ const AdminController = {
     const perPage = 3;
     const page = req.query.page || 1;
     var totalPage = 0;
+    var status = req.body.option.find((item) => item.selected);
+    var data = [];
     try {
       if (page == 1) {
-        let totalRequest = await WithdrawRequest.countDocuments();
-        totalPage = Math.ceil(totalRequest / perPage);
+        if (status.value === "ALL") {
+          let totalRequest = await WithdrawRequest.countDocuments();
+          totalPage = Math.ceil(totalRequest / perPage);
+        } else {
+          let totalRequest = await WithdrawRequest.countDocuments({
+            status: status.value,
+          });
+          totalPage = Math.ceil(totalRequest / perPage);
+        }
       }
-      const data = await WithdrawRequest.find()
-        .populate(
-          "userId",
-          "avatar email username bank banknumber bankaccountname phoneNumber location"
-        )
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .lean();
+      if (status.value === "ALL") {
+        data = await WithdrawRequest.find()
+          .populate(
+            "userId",
+            "avatar email username bank banknumber bankaccountname phoneNumber location"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        data = await WithdrawRequest.find({ status: status.value })
+          .populate(
+            "userId",
+            "avatar email username bank banknumber bankaccountname phoneNumber location"
+          )
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      }
+
       return res.status(200).json({
         totalPage: totalPage,
         data: data,
@@ -333,6 +508,88 @@ const AdminController = {
       withdraw.status = statusList.ACCEPT;
       await withdraw.save();
       return SuccessMsgPayload(res, "Chấp nhận thành công");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  //report
+  GetReportList: async (req, res) => {
+    try {
+      const perPage = 3;
+      const page = req.query.page || 1;
+      var totalPage = 0;
+      var status = req.body.option.find((item) => item.selected);
+      var result = [];
+
+      if (page == 1) {
+        if (status.value === "ALL") {
+          let totalRepost = await Report.countDocuments({});
+          totalPage = Math.ceil(totalRepost / perPage);
+        } else {
+          let totalRepost = await Report.countDocuments({
+            status: status.value,
+          });
+          totalPage = Math.ceil(totalRepost / perPage);
+        }
+      }
+
+      if (status.value === "ALL") {
+        result = await Report.find({})
+          .populate("userId", "email username phoneNumber")
+          .populate({
+            path: "vehicleId",
+            select: "brand model licenseplate year",
+            populate: { path: "ownerId", select: "email username phoneNumber" },
+          })
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      } else {
+        result = await Report.find({ status: status.value })
+          .populate("userId", "email username phoneNumber")
+          .populate({
+            path: "vehicleId",
+            select: "brand model licenseplate year",
+            populate: { path: "ownerId", select: "email username phoneNumber" },
+          })
+          .skip(perPage * (page - 1))
+          .limit(perPage)
+          .lean();
+      }
+
+      return SuccessDataPayload(res, {
+        totalPage: totalPage,
+        data: result,
+      });
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  AcceptReport: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const report = await Report.findById(id);
+      report.status = true;
+      await report.save();
+      return SuccessMsgPayload(res, "Chấp nhận thành công!!!");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  DenyReport: async (req, res) => {
+    try {
+      const id = req.params.id;
+      await Report.findByIdAndDelete(id);
+      return SuccessMsgPayload(res, "Từ chối thành công!!!");
+    } catch (error) {
+      return ErrorPayload(res, error);
+    }
+  },
+  ReportDetail: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const report = await Report.findById(id).lean();
+      return SuccessDataPayload(res, report);
     } catch (error) {
       return ErrorPayload(res, error);
     }

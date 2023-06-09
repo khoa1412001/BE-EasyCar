@@ -7,6 +7,7 @@ const adminRoute = require("./AdminRoute");
 const ownedVehicleRoute = require("./OwnedVehicleRoute");
 const paymentRoute = require("./PaymentRoute");
 const rentalVehicleRoute = require("./RentalVehicleRoute");
+const reportRoute = require("./ReportRoute");
 
 const testRoute = require("./TestRoute");
 
@@ -24,6 +25,7 @@ function route(app) {
   app.use("/api/my-vehicle", passport, ownedVehicleRoute);
   app.use("/api/payment", paymentRoute);
   app.use("/api/history", passport, rentalVehicleRoute);
+  app.use("/api/report", passport, reportRoute);
   app.use("/api/test", testRoute);
 }
 

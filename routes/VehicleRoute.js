@@ -6,4 +6,5 @@ router.post("/register", passport, parser.array("vehicleimage"), vehicleControll
 router.get("/models", vehicleController.GetModels);
 router.get("/detail/:id", vehicleController.DetailVehicle);
 router.get("/rating/:id", vehicleController.GetRateVehicle);
+router.get("/recommend/:id",vehicleController.GetRecommendation);
 module.exports = router;
