@@ -142,5 +142,21 @@ const AuthController = {
       return res.status(400).json({ message: "Xác thực thất bại" });
     }
   },
+  GetMessageFromChatbot: async (req, res) => {
+    try {
+      const body = req.body.data;
+      console.log(body)
+      axios.post(
+        process.env.BOT_URL,body
+      )
+      .then((response) => {
+        return res.status(200).json(response.data);
+      })
+
+    } catch (error) {
+      console.log(error.message);
+      return res.status(400).json({ message: "Hệ thống đang có lỗi, vui lòng thử lại sau!!!" });
+    }
+  },
 };
 module.exports = AuthController;

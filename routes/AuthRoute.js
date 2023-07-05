@@ -76,4 +76,5 @@ router.post("/change-password", passport, authController.ChangePassword); //Doi 
 router.get("/validate-mail/:token", authController.ValidateMail);
 router.post("/google", authController.LoginWithGoogle);
 router.post("/login-admin", authController.LoginAdmin);
+router.post("/chatbot", authController.GetMessageFromChatbot);
 module.exports = router;
