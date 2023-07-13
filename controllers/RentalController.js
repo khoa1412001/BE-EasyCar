@@ -8,7 +8,7 @@ const {
   SuccessMsgPayload,
 } = require("../payloads");
 const Vehicle = require("../models/Vehicle");
-
+const User = require("../models/User");
 const RentalController = {
   AddHistoryRental: async (req, res) => {
     try {
@@ -21,7 +21,12 @@ const RentalController = {
       const checkResult = historyList.every(
         (item) => rentalDateEnd < item.rentalDateStart || rentalDateStart > item.rentalDateEnd
       );
-
+      const user = await User.findById(req.user.userId);
+      if(!user.verification){
+        return res.status(400).json({
+          message: "Vui lòng xác thực tài khoản để thuê xe !!!",
+        });
+      }
       if (!checkResult)
         return res.status(400).json({
           message: "Lịch đăng ký xe đã bị trùng, vui lòng chọn lại ngày thuê xe",

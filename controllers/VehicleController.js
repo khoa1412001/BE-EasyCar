@@ -15,10 +15,10 @@ const {
 const VehicleController = {
   RegisterVehicle: async (req, res) => {
     try {
-      const checkPlate = await VehicleRegister.countDocuments({
-        licenseplate: req.body.licenseplate,
-      });
-      if (checkPlate) return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
+      // const checkPlate = await VehicleRegister.countDocuments({
+      //   licenseplate: req.body.licenseplate,
+      // });
+      // if (checkPlate) return res.status(400).json({ message: "Biển số xe đã được đăng ký" });
       if ((req.body.longitude == 0) && (req.body.latitude == 0)) return res.status(400).json({ message: "Hãy cập nhật vị trí của bạn !!!" });
   
       const vehicle = await uploadArray(req.files);
