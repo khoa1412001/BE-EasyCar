@@ -81,7 +81,7 @@ const OwnedVehicleController = {
     try {
       const result = await VehicleRentalHistory.find(
         { vehicleId },
-        "rentalDateStart rentalDateEnd totalPrice"
+        "rentalDateStart rentalDateEnd totalPrice status"
       )
         .populate("userId", "username -_id")
         .lean();
