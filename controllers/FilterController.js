@@ -113,7 +113,7 @@ async function TextFilter(req, res) {
         validResult.push({
           name: `${result[i].brand} ${result[i].model}`,
           link:
-            process.env.FE_URL ||
+            process.env.FRONTEND_URL ||
             "http://localhost:3000" +
               `/details?id=${result[i]._id}&startdate=${rentalDateStart.getTime() / 1000}&enddate=${
                 rentalDateEnd.getTime() / 1000
@@ -144,26 +144,23 @@ async function ElasticSearch(req, res) {
   var result = [];
   try {
     axios
-    .get(
-      process.env.ELASTIC_URI+encodeURIComponent(query)
-    )
-    .then((response) => {
-      response.data.hits.hits.map(item => {
-        result.push(item._source)
+      .get(process.env.ELASTIC_URI + encodeURIComponent(query))
+      .then((response) => {
+        response.data.hits.hits.map((item) => {
+          result.push(item._source);
+        });
+        result.map((result) => {
+          result.totalprice = Math.round(result.rentprice * 1.1 * days);
+          result.basicinsurance = Math.round(result.totalprice * 0.085);
+          result.totalprice = Math.round(result.totalprice + result.basicinsurance);
+        });
+        console.log(result);
+        return res.status(200).json(result);
       })
-      result.map((result) => {
-        result.totalprice = Math.round(result.rentprice * 1.1 * days);
-        result.basicinsurance = Math.round(result.totalprice * 0.085);
-        result.totalprice = Math.round(result.totalprice + result.basicinsurance);
+      .catch((err) => {
+        console.log(err);
+        return res.status(400).json("Lỗi máy chủ, vui lòng thử lại sau");
       });
-      console.log(result)
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(400).json("Lỗi máy chủ, vui lòng thử lại sau");
-    });
-
   } catch (error) {
     return ErrorPayload(res, error);
   }
