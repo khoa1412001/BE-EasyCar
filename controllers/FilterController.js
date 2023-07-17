@@ -113,11 +113,10 @@ async function TextFilter(req, res) {
         validResult.push({
           name: `${result[i].brand} ${result[i].model}`,
           link:
-            process.env.FRONTEND_URL ||
-            "http://localhost:3000" +
-              `/details?id=${result[i]._id}&startdate=${rentalDateStart.getTime() / 1000}&enddate=${
-                rentalDateEnd.getTime() / 1000
-              }`,
+            process.env.FRONTEND_URL +
+            `/details?id=${result[i]._id}&startdate=${rentalDateStart.getTime() / 1000}&enddate=${
+              rentalDateEnd.getTime() / 1000
+            }`,
         });
       i++;
     }
